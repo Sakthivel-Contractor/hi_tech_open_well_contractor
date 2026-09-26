@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+.DS_Store
+# built from public/images/ by scripts/optimize-images.mjs
+public/optimized
+src/generated

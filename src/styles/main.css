@@ -1,0 +1,253 @@
+:root {
+  --blue: #17537a;
+  --blue-dark: #0f3f5e;
+  --red: #8c3f1c;
+  --red-dark: #733215;
+  --sand: #f4efe6;
+  --ink: #1f1a14;
+  --muted: #5a5046;
+  --surface: #fffdf9;
+  --line: #e2d8c8;
+  --wa: #1c8a4b;
+  --wa-dark: #16733e;
+  --accent-light: #f0b98c; /* warm highlight on dark backgrounds */
+  --alt-bg: #ece4d6;
+  --radius: 14px;
+  --shadow-sm: 0 1px 3px rgba(31, 26, 20, 0.06), 0 1px 2px rgba(31, 26, 20, 0.04);
+  --shadow-md: 0 10px 24px rgba(31, 26, 20, 0.12);
+  --font-head: 'Bricolage Grotesque', 'Hind Madurai', system-ui, sans-serif;
+  --font-body: 'Hind Madurai', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Heading scale. Tamil glyphs are wider and taller, so Tamil sizes are a step smaller. */
+  --fs-hero: clamp(2.1rem, 6.5vw, 3.5rem);
+  --fs-hero-ta: clamp(1.75rem, 5.2vw, 2.75rem);
+  --fs-h1: clamp(2rem, 5.5vw, 3rem);
+  --fs-h1-ta: clamp(1.65rem, 4.6vw, 2.4rem);
+  --fs-h2: clamp(1.65rem, 4.2vw, 2.25rem);
+  --fs-h2-ta: clamp(1.45rem, 3.6vw, 1.9rem);
+  --fs-h3: 1.25rem;
+  --fs-h3-ta: 1.15rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--sand);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tamil script needs a little more room */
+.lang-ta {
+  line-height: 1.7;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.lang-ta h1,
+.lang-ta h2,
+.lang-ta h3 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.lang-ta h3 {
+  font-size: var(--fs-h3-ta);
+  line-height: 1.45;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--blue);
+}
+
+:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 8px;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* anchors land below the sticky header */
+[id] {
+  scroll-margin-top: 76px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.container.narrow {
+  max-width: 760px;
+}
+@media (min-width: 768px) {
+  .container {
+    padding: 0 24px;
+  }
+}
+
+/* Sections: one vertical rhythm everywhere; pages alternate .section and .section-alt */
+.section {
+  padding: 56px 0;
+  background: var(--sand);
+}
+.section-alt {
+  background: var(--alt-bg);
+}
+.section h2 {
+  margin: 0 0 10px;
+  font-size: var(--fs-h2);
+  line-height: 1.2;
+}
+.lang-ta .section h2 {
+  font-size: var(--fs-h2-ta);
+  line-height: 1.4;
+}
+/* short accent rule under section headings */
+.section h2::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background: var(--red);
+}
+.section-intro {
+  margin: 0 0 32px;
+  color: var(--muted);
+  max-width: 62ch;
+  font-size: 1.06rem;
+}
+@media (min-width: 900px) {
+  .section {
+    padding: 88px 0;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(31, 26, 20, 0.16);
+}
+.btn:active:not(:disabled) {
+  transform: none;
+}
+.btn:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+.btn-red {
+  background: var(--red);
+  color: #fff;
+}
+.btn-red:hover:not(:disabled) {
+  background: var(--red-dark);
+}
+.btn-blue {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-blue:hover {
+  background: var(--blue-dark);
+}
+.btn-outline {
+  background: var(--surface);
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.btn-outline:hover {
+  background: #e6eff5;
+}
+/* for dark backgrounds (hero, CTA band) */
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #fff;
+}
+.btn-light {
+  background: #fff;
+  color: var(--red-dark);
+}
+.btn-light:hover {
+  background: #fbf3ec;
+}
+.btn-block {
+  width: 100%;
+}
+.btn-small {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 1rem;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "hi-tech-open-well-contractor",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/optimize-images.mjs && vite",
+    "build": "node scripts/optimize-images.mjs && vite-ssg build && node scripts/sitemap.mjs && node scripts/optimize-images.mjs --prune-dist",
+    "preview": "vite preview",
+    "images": "node scripts/optimize-images.mjs"
+  },
+  "dependencies": {
+    "@unhead/vue": "^2.1.17",
+    "vue": "^3.5.43",
+    "vue-router": "^5.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.9",
+    "sharp": "^0.35.4",
+    "vite": "^8.3.1",
+    "vite-ssg": "^28.3.0"
+  }
+}
