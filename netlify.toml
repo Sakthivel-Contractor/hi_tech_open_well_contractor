@@ -5,12 +5,20 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Caching. Files with a content hash in their name never change, so browsers keep them a year.
+#   /assets/*    JS, CSS and the self-hosted fonts (hashed by Vite)
+#   /optimized/* photos (hashed by scripts/optimize-images.mjs)
+# HTML pages get "public, max-age=0, must-revalidate" from dist/_headers, which
+# scripts/sitemap.mjs writes for every page at build time (one rule per page, so it never
+# overlaps the rules below). That is also Netlify's default for any file without a rule.
+# Compression: Netlify serves Brotli or gzip automatically; nothing to configure.
+
 [[headers]]
-  for = "/optimized/*"
+  for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/assets/*"
+  for = "/optimized/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"

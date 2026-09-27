@@ -2,6 +2,7 @@
 import { lang, t, messages, pick } from '../i18n.js'
 import { servicePhoto, workPhotos, photoAlt } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
+import ResponsiveImage from './ResponsiveImage.vue'
 
 // Each card and the photo it shows: photo 1 -> public/images/service-1.jpg, and so on.
 // `fallback`: a gallery photo to show until that service-N.jpg is added.
@@ -13,14 +14,16 @@ const services = [
   { key: 'survey', photo: 5, fallback: 'work-2' },
 ].map((s) => ({ ...s, image: cardImage(s) }))
 
-// { src, width, height, altName } for a card, or null (then the icon box is shown).
+// { image, altName } for a card, or null (then the icon box is shown).
 function cardImage({ photo, fallback }) {
   const own = servicePhoto(photo)
-  if (own) return { ...own, altName: `service-${photo}` }
+  if (own) return { image: own, altName: `service-${photo}` }
   const work = workPhotos.find((p) => p.name === fallback)
-  // the 600 px gallery tile is plenty for a card
-  return work ? { src: work.tile, width: work.width, height: work.height, altName: work.name } : null
+  // the gallery thumbnail sizes are the same as a card's
+  return work ? { image: work.thumb, altName: work.name } : null
 }
+// Card width: full width on phones, 2 columns from 600px, 4 columns (max 290px) from 1024px.
+const CARD_SIZES = '(min-width: 1024px) 290px, (min-width: 600px) 50vw, 100vw'
 // The "other language" name is shown under the main name, so farmers see both.
 const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[key].name
 </script>
@@ -30,13 +33,12 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
     <li v-for="({ key, image }, i) in services" :key="key" v-reveal="i" class="service-item">
       <div class="service-card">
         <div class="service-media img-placeholder">
-          <img
+          <ResponsiveImage
             v-if="image"
-            v-fade-img
-            :src="image.src"
+            :image="image.image"
+            :sizes="CARD_SIZES"
             :alt="pick(photoAlt(image.altName))"
-            :width="image.width"
-            :height="image.height"
+            fade
             loading="lazy"
             decoding="async"
             class="service-img"
@@ -110,7 +112,7 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
   .service-card:hover::after {
     opacity: 1;
   }
-  .service-card:hover .service-img {
+  .service-card:hover :deep(.service-img) {
     transform: scale(1.06);
   }
 }
@@ -120,7 +122,8 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
     transform: scale(0.98);
   }
 }
-.service-img {
+/* :deep: the photo's <img> sits inside ResponsiveImage's <picture>, which carries no scope id */
+.service-media :deep(.service-img) {
   flex: none;
   display: block;
   transition:

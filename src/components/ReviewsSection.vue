@@ -2,7 +2,7 @@
 // Customer reviews from src/data/reviews.js: a swipe carousel on mobile, 3 columns on desktop.
 // Home page: all filled reviews, or a "coming soon" card when there are none.
 // District page (pass `district`): only that district's reviews; hidden when there are none.
-// Sample reviews (isSample) carry a "Sample" badge and are left out of the average and count.
+// Sample reviews (isSample) are left out of the average and count.
 import { computed, ref } from 'vue'
 import { lang, t, messages } from '../i18n.js'
 import { business } from '../data/business.js'
@@ -92,7 +92,6 @@ const countText = computed(() =>
         :aria-label="t('reviews.listLabel')"
       >
         <li v-for="(r, i) in list" :key="i" v-reveal="i % 3" class="review-card">
-          <span v-if="r.isSample" class="sample-badge">{{ t('reviews.sample') }}</span>
           <StarRating v-if="ratingOf(r) !== null" :value="ratingOf(r)" :size="20" />
           <blockquote class="review-text">
             <p>“{{ field(r.text) }}”</p>
@@ -289,19 +288,6 @@ const countText = computed(() =>
   font-weight: 600;
   font-size: 0.85rem;
   line-height: 1.5;
-}
-.sample-badge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 1px 9px;
-  border-radius: 6px;
-  background: #ebe7e1;
-  color: #5f5a53;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.6;
-  letter-spacing: 0.02em;
 }
 .review-empty {
   max-width: 560px;

@@ -4,7 +4,11 @@ import { useRoute } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { initLang, lang, t } from './i18n.js'
 import { findDistrict } from './data/areas.js'
-import { pageEntered } from './motion.js'
+import { pageEntered, scanReveals } from './motion.js'
+import tamil600 from './assets/fonts/hind-madurai-600-tamil.woff2?url'
+import tamil400 from './assets/fonts/hind-madurai-400-tamil.woff2?url'
+import latin600 from './assets/fonts/hind-madurai-600-latin.woff2?url'
+import logoFont from './assets/fonts/bricolage-700-latin.woff2?url'
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import CtaBand from './components/CtaBand.vue'
@@ -12,7 +16,20 @@ import MobileBar from './components/MobileBar.vue'
 import WhatsAppFloat from './components/WhatsAppFloat.vue'
 
 // <html lang> follows the language switch; pre-rendered pages get the default (ta).
-useHead({ htmlAttrs: { lang } })
+useHead({
+  htmlAttrs: { lang },
+  // Preload only the fonts on the first screen (Tamil hero heading + text, the phone number,
+  // the logo), so the first layout already has them: laying out Tamil text in a system
+  // fallback first and again after the swap measurably delayed the first paint. The other
+  // weights (Tamil/Latin 500, Latin 400) are below the fold and load on demand via fonts.css.
+  link: [tamil600, tamil400, latin600, logoFont].map((href) => ({
+    rel: 'preload',
+    as: 'font',
+    type: 'font/woff2',
+    href,
+    crossorigin: '',
+  })),
+})
 
 const route = useRoute()
 // Pages that open with a dark photo hero: the header sits transparent on top of it.
@@ -24,6 +41,7 @@ const hasHero = computed(
 
 onMounted(() => {
   initLang()
+  scanReveals()
   window.__appReady = true
 })
 </script>

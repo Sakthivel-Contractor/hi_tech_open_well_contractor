@@ -37,8 +37,11 @@
   --header-h: 64px;
   --header-shrink: 0.875; /* condensed bar = 56px */
 
-  --font-head: 'Bricolage Grotesque', 'Hind Madurai', system-ui, sans-serif;
-  --font-body: 'Hind Madurai', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* web font first, then size-matched local fallbacks (inline in index.html) so the swap does not shift text */
+  --font-head: 'Bricolage Grotesque', 'Bricolage Fallback Android', 'Bricolage Fallback Windows',
+    'Hind Madurai', 'Hind Fallback Android', 'Hind Fallback Windows', system-ui, sans-serif;
+  --font-body: 'Hind Madurai', 'Hind Fallback Android', 'Hind Fallback Windows', system-ui,
+    -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Heading scale. Tamil glyphs are wider and taller, so Tamil sizes are a step smaller. */
   --fs-hero: clamp(2.1rem, 6.5vw, 3.5rem);
@@ -140,6 +143,10 @@ h3 {
 img {
   max-width: 100%;
   height: auto;
+}
+/* <picture> wrappers (ResponsiveImage) do not add a box: the <img> lays out as before */
+picture {
+  display: contents;
 }
 
 a {
