@@ -5,7 +5,7 @@
 //   village   village or town
 //   district  district, in English or Tamil (e.g. 'Salem' or 'சேலம்'). The review also shows
 //             on that district's page.
-//   work      type of work: 'openwell', 'borewell', 'repair', 'survey' (shown in the page
+//   work      type of work: 'openwell', 'deepening', 'wall', 'cleaning', 'survey' (shown in the page
 //             language), or any other text
 //   rating    1 to 5 stars
 //   text      what the customer said

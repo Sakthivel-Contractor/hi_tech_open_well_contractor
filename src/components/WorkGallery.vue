@@ -4,14 +4,21 @@
 import { ref, computed, nextTick } from 'vue'
 import { t, pick } from '../i18n.js'
 import { workPhotos, photoAlt } from '../data/photos.js'
+import { prefersReducedMotion } from '../motion.js'
 import AppIcon from './AppIcon.vue'
 
 const dialog = ref(null)
 const current = ref(0)
 // The full-size image is only rendered while open, so it never downloads with the page.
 const isOpen = ref(false)
+// Drives the fade + scale-in / fade-out (the dialog stays open until the fade-out ends).
+const shown = ref(false)
+// Direction of the last step, so the photo slides the matching way.
+const dir = ref(1)
 const photo = computed(() => (isOpen.value ? workPhotos[current.value] : null))
 const alt = (p) => pick(photoAlt(p.name))
+
+const CLOSE_MS = 200 // = --dur-fast
 
 async function open(i) {
   current.value = i
@@ -19,17 +26,34 @@ async function open(i) {
   await nextTick() // render the buttons first, so focus lands on "close"
   dialog.value.showModal()
   document.documentElement.style.overflow = 'hidden'
+  requestAnimationFrame(() => (shown.value = true))
 }
+let closeTimer = null
 function close() {
-  dialog.value.close()
-  onClose()
+  if (!dialog.value?.open || closeTimer) return
+  shown.value = false
+  closeTimer = setTimeout(
+    () => {
+      closeTimer = null
+      dialog.value?.close()
+      onClose()
+    },
+    prefersReducedMotion() ? 0 : CLOSE_MS,
+  )
 }
-// Also runs on the dialog's own `cancel` / `close` events (Esc key). Safe to run twice.
+// Esc: animate out instead of closing at once.
+function onCancel(e) {
+  e.preventDefault()
+  close()
+}
+// Also runs on the dialog's own `close` event. Safe to run twice.
 function onClose() {
   isOpen.value = false
+  shown.value = false
   document.documentElement.style.overflow = ''
 }
 function step(delta) {
+  dir.value = delta
   current.value = (current.value + delta + workPhotos.length) % workPhotos.length
 }
 function onKey(e) {
@@ -55,9 +79,10 @@ function onTouchEnd(e) {
 
 <template>
   <ul class="gallery">
-    <li v-for="(p, i) in workPhotos" :key="p.name">
-      <button type="button" class="tile" @click="open(i)">
+    <li v-for="(p, i) in workPhotos" :key="p.name" v-reveal="i % 4">
+      <button type="button" class="tile img-placeholder" @click="open(i)">
         <img
+          v-fade-img
           :src="p.tile"
           :srcset="`${p.tile} 600w, ${p.src} 1200w`"
           sizes="(min-width: 1200px) 25vw, (min-width: 900px) 33vw, 50vw"
@@ -67,15 +92,18 @@ function onTouchEnd(e) {
           loading="lazy"
           decoding="async"
         />
+        <span class="tile-overlay" aria-hidden="true">
+          <AppIcon name="zoom" :size="34" />
+        </span>
       </button>
     </li>
   </ul>
 
   <dialog
     ref="dialog"
-    class="lightbox"
+    :class="['lightbox', { 'is-shown': shown }]"
     :aria-label="t('galleryTitle')"
-    @cancel="onClose"
+    @cancel="onCancel"
     @close="onClose"
     @click="onBackdrop"
     @keydown="onKey"
@@ -83,14 +111,16 @@ function onTouchEnd(e) {
     @touchend="onTouchEnd"
   >
     <div v-if="photo" class="lb-stage">
-      <img
-        :key="photo.name"
-        :src="photo.src"
-        :alt="alt(photo)"
-        :width="photo.width"
-        :height="photo.height"
-        class="lb-img"
-      />
+      <Transition :name="dir > 0 ? 'lb-next' : 'lb-prev'" mode="out-in">
+        <img
+          :key="photo.name"
+          :src="photo.src"
+          :alt="alt(photo)"
+          :width="photo.width"
+          :height="photo.height"
+          class="lb-img"
+        />
+      </Transition>
       <p class="lb-count" aria-live="polite">{{ current + 1 }} / {{ workPhotos.length }}</p>
       <button type="button" class="lb-btn lb-close" :aria-label="t('lightbox.close')" @click="close">
         <AppIcon name="close" :size="28" />
@@ -121,10 +151,12 @@ function onTouchEnd(e) {
   width: 100%;
   padding: 0;
   border: 0;
-  border-radius: 10px;
+  position: relative;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: #d9cfbf;
   cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease);
 }
 .tile img {
   display: block;
@@ -132,14 +164,45 @@ function onTouchEnd(e) {
   height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition:
+    transform var(--dur-slow) var(--ease),
+    opacity var(--dur-slow) var(--ease);
 }
-.tile:hover img {
-  transform: scale(1.03);
+/* dark overlay with a zoom icon */
+.tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 16, 12, 0.42);
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.tile-overlay svg {
+  transform: scale(0.8);
+  transition: transform var(--dur-fast) var(--ease);
+}
+@media (hover: hover) {
+  .tile:hover img {
+    transform: scale(1.06);
+  }
+  .tile:hover .tile-overlay {
+    opacity: 1;
+  }
+  .tile:hover .tile-overlay svg {
+    transform: scale(1);
+  }
+}
+.tile:focus-visible .tile-overlay {
+  opacity: 1;
+}
+.tile:active {
+  transform: scale(0.98);
 }
 .tile:focus-visible {
-  outline: 3px solid var(--accent-light);
-  outline-offset: 2px;
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
 }
 
 .lightbox {
@@ -150,11 +213,19 @@ function onTouchEnd(e) {
   margin: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: rgba(12, 10, 8, 0.92);
   color: #fff;
+  --focus: var(--accent-light);
+  /* fade in / out (the class is toggled from the script) */
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.lightbox.is-shown {
+  opacity: 1;
+  transition-duration: var(--dur-slow);
 }
 .lightbox::backdrop {
-  background: rgba(12, 10, 8, 0.92);
+  background: transparent;
 }
 .lb-stage {
   position: relative;
@@ -170,7 +241,38 @@ function onTouchEnd(e) {
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
+}
+/* scale-in on open */
+.lb-stage > .lb-img {
+  transform: scale(0.94);
+  transition: transform var(--dur-slow) var(--ease);
+}
+.is-shown .lb-stage > .lb-img {
+  transform: scale(1);
+}
+/* previous / next: the photo slides the way you moved */
+.lb-next-enter-active,
+.lb-prev-enter-active {
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease) !important;
+}
+.lb-next-leave-active,
+.lb-prev-leave-active {
+  transition:
+    opacity 120ms var(--ease),
+    transform 120ms var(--ease) !important;
+}
+.lb-next-enter-from,
+.lb-prev-leave-to {
+  opacity: 0;
+  transform: translateX(32px) !important;
+}
+.lb-next-leave-to,
+.lb-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-32px) !important;
 }
 .lb-count {
   position: absolute;
@@ -192,7 +294,12 @@ function onTouchEnd(e) {
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    scale var(--dur-fast) var(--ease);
+}
+.lb-btn:active {
+  scale: 0.92;
 }
 .lb-btn:hover,
 .lb-btn:focus-visible {

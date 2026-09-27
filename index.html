@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#17537A" />
+    <!-- Motion only enhances: reveal effects hide content only while this class is set, and it
+         is removed again if the app has not started after 4 s (script blocked or failed). -->
+    <script>
+      document.documentElement.classList.add('js')
+      setTimeout(function () {
+        if (!window.__appReady) document.documentElement.classList.remove('js')
+      }, 4000)
+    </script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />

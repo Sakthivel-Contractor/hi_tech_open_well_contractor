@@ -4,7 +4,7 @@ import { business, telLink, waLink, formatPhone } from '../data/business.js'
 import AppIcon from './AppIcon.vue'
 
 const year = new Date().getFullYear()
-const services = ['openwell', 'borewell', 'repair', 'survey']
+const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 </script>
 
 <template>
@@ -24,18 +24,18 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
         <p class="footer-tagline">{{ t('tagline') }}</p>
         <p class="footer-address">
           <AppIcon name="pin" :size="18" />
-          <a :href="business.mapUrl" target="_blank" rel="noopener">{{ pick(business.address) }}</a>
+          <a :href="business.mapUrl" target="_blank" rel="noopener" class="link-grow">{{ pick(business.address) }}</a>
         </p>
       </div>
 
       <nav class="footer-col" :aria-label="t('footer.quickLinks')">
         <p class="footer-heading">{{ t('footer.quickLinks') }}</p>
         <ul>
-          <li><RouterLink to="/">{{ t('nav.home') }}</RouterLink></li>
-          <li><RouterLink to="/#services">{{ t('nav.services') }}</RouterLink></li>
-          <li><RouterLink to="/#areas">{{ t('nav.areas') }}</RouterLink></li>
-          <li><RouterLink to="/contact">{{ t('nav.contact') }}</RouterLink></li>
-          <li><RouterLink to="/privacy">{{ t('footer.privacy') }}</RouterLink></li>
+          <li><RouterLink to="/" class="link-grow">{{ t('nav.home') }}</RouterLink></li>
+          <li><RouterLink to="/#services" class="link-grow">{{ t('nav.services') }}</RouterLink></li>
+          <li><RouterLink to="/#areas" class="link-grow">{{ t('nav.areas') }}</RouterLink></li>
+          <li><RouterLink to="/contact" class="link-grow">{{ t('nav.contact') }}</RouterLink></li>
+          <li><RouterLink to="/privacy" class="link-grow">{{ t('footer.privacy') }}</RouterLink></li>
         </ul>
       </nav>
 
@@ -43,7 +43,7 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
         <p class="footer-heading">{{ t('footer.services') }}</p>
         <ul>
           <li v-for="key in services" :key="key">
-            <RouterLink to="/#services">{{ t(`services.${key}.name`) }}</RouterLink>
+            <RouterLink to="/#services" class="link-grow">{{ t(`services.${key}.name`) }}</RouterLink>
           </li>
         </ul>
       </div>
@@ -56,7 +56,7 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
             <span>
               <span class="label">{{ t('footer.phone') }}</span>
               <template v-for="(num, i) in business.phones" :key="num">
-                <a :href="telLink(num)">{{ formatPhone(num) }}</a><br v-if="i < business.phones.length - 1" />
+                <a :href="telLink(num)" class="link-grow">{{ formatPhone(num) }}</a><br v-if="i < business.phones.length - 1" />
               </template>
             </span>
           </li>
@@ -65,7 +65,7 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
             <span>
               <span class="label">{{ t('footer.whatsapp') }}</span>
               <template v-for="(num, i) in business.whatsapp" :key="num">
-                <a :href="waLink(num)" target="_blank" rel="noopener">{{ formatPhone(num) }}</a><br v-if="i < business.whatsapp.length - 1" />
+                <a :href="waLink(num)" target="_blank" rel="noopener" class="link-grow">{{ formatPhone(num) }}</a><br v-if="i < business.whatsapp.length - 1" />
               </template>
             </span>
           </li>
@@ -73,7 +73,7 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
             <AppIcon name="mail" :size="18" />
             <span>
               <span class="label">{{ t('footer.email') }}</span>
-              <a :href="`mailto:${business.email}`" class="email">{{ business.email }}</a>
+              <a :href="`mailto:${business.email}`" class="email link-grow">{{ business.email }}</a>
             </span>
           </li>
         </ul>
@@ -81,7 +81,7 @@ const services = ['openwell', 'borewell', 'repair', 'survey']
     </div>
     <div class="container footer-bottom">
       <span>&copy; {{ year }} {{ business.name }}. {{ t('footer.rights') }}</span>
-      <RouterLink to="/privacy">{{ t('footer.privacy') }}</RouterLink>
+      <RouterLink to="/privacy" class="link-grow">{{ t('footer.privacy') }}</RouterLink>
     </div>
   </footer>
 </template>
@@ -171,12 +171,10 @@ ul {
   text-decoration: none;
   display: inline-block;
   padding: 4px 0;
-  transition: color 0.2s ease;
+  transition: color var(--dur-fast) var(--ease);
 }
 .site-footer a:hover {
   color: var(--accent-light);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 .email {
   word-break: break-all;

@@ -3,7 +3,7 @@
 // Home page: all filled reviews, or a "coming soon" card when there are none.
 // District page (pass `district`): only that district's reviews; hidden when there are none.
 // Sample reviews (isSample) carry a "Sample" badge and are left out of the average and count.
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { lang, t, messages } from '../i18n.js'
 import { business } from '../data/business.js'
 import { filledReviews, reviewsForDistrict, ratingOf, ratingSummary, fieldIn } from '../data/reviews.js'
@@ -35,6 +35,27 @@ function initial(name) {
   return [...s][0]?.toUpperCase() ?? ''
 }
 
+// Mobile carousel: which card is in view, for the dots under it.
+const listEl = ref(null)
+const active = ref(0)
+let ticking = false
+function onListScroll() {
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    ticking = false
+    const el = listEl.value
+    const card = el?.firstElementChild
+    if (!card) return
+    const stepWidth = card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || 0)
+    active.value = Math.min(list.value.length - 1, Math.round(el.scrollLeft / stepWidth))
+  })
+}
+function goTo(i) {
+  const card = listEl.value?.children[i]
+  if (card) listEl.value.scrollTo({ left: card.offsetLeft - listEl.value.firstElementChild.offsetLeft })
+}
+
 const countText = computed(() =>
   summary.value.count === 1 ? t('reviews.countOne') : t('reviews.count', { n: summary.value.count }),
 )
@@ -43,9 +64,9 @@ const countText = computed(() =>
 <template>
   <section v-if="list.length || !district" class="section reviews-section" id="reviews">
     <div class="container">
-      <h2>{{ t('reviews.title') }}</h2>
+      <h2 v-reveal>{{ t('reviews.title') }}</h2>
 
-      <div class="reviews-head">
+      <div v-reveal class="reviews-head">
         <p v-if="summary.count && summary.average !== null" class="summary">
           <span class="summary-avg">{{ summary.average.toFixed(1) }}</span>
           <StarRating :value="summary.average" :size="22" />
@@ -64,11 +85,13 @@ const countText = computed(() =>
 
       <ul
         v-if="list.length"
+        ref="listEl"
         class="review-list"
+        @scroll.passive="onListScroll"
         tabindex="0"
         :aria-label="t('reviews.listLabel')"
       >
-        <li v-for="(r, i) in list" :key="i" class="review-card">
+        <li v-for="(r, i) in list" :key="i" v-reveal="i % 3" class="review-card">
           <span v-if="r.isSample" class="sample-badge">{{ t('reviews.sample') }}</span>
           <StarRating v-if="ratingOf(r) !== null" :value="ratingOf(r)" :size="20" />
           <blockquote class="review-text">
@@ -77,6 +100,7 @@ const countText = computed(() =>
           <div class="reviewer">
             <img
               v-if="r.photo"
+              v-fade-img
               :src="r.photo"
               alt=""
               width="52"
@@ -95,8 +119,19 @@ const countText = computed(() =>
           </div>
         </li>
       </ul>
+      <!-- carousel position (mobile only); the list itself is swipe/scroll and keyboard accessible -->
+      <div v-if="list.length > 1" class="review-dots" aria-hidden="true">
+        <button
+          v-for="(r, i) in list"
+          :key="i"
+          type="button"
+          tabindex="-1"
+          :class="['dot', { 'is-active': i === active }]"
+          @click="goTo(i)"
+        ></button>
+      </div>
 
-      <p v-else class="review-card review-empty">{{ t('reviews.comingSoon') }}</p>
+      <p v-else-if="!list.length" v-reveal class="review-card review-empty">{{ t('reviews.comingSoon') }}</p>
     </div>
   </section>
 </template>
@@ -143,7 +178,42 @@ const countText = computed(() =>
   scroll-snap-type: x mandatory;
   scroll-padding: 0 16px;
   overscroll-behavior-x: contain;
-  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.review-list::-webkit-scrollbar {
+  display: none;
+}
+.review-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--blue);
+  opacity: 0.25;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    opacity var(--dur-fast) var(--ease);
+}
+.dot.is-active::before {
+  opacity: 1;
+  transform: scaleX(2.25);
 }
 .review-list:focus-visible {
   outline-offset: -3px;
@@ -251,6 +321,9 @@ const countText = computed(() =>
     margin: 0;
     padding: 0;
     overflow: visible;
+  }
+  .review-dots {
+    display: none;
   }
   .review-empty {
     margin: 0 auto;

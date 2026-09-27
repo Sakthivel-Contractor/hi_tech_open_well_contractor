@@ -7,11 +7,11 @@ import AppIcon from './AppIcon.vue'
 <template>
   <section class="cta-band">
     <div class="container cta-inner">
-      <div class="cta-copy">
+      <div v-reveal class="cta-copy">
         <h2>{{ t('cta.title') }}</h2>
         <p>{{ t('cta.text') }}</p>
       </div>
-      <div class="cta-actions">
+      <div v-reveal="2" class="cta-actions">
         <a :href="telLink()" class="btn btn-light">
           <AppIcon name="phone" :size="20" />
           {{ formatPhone(primaryPhone) }}
@@ -27,9 +27,53 @@ import AppIcon from './AppIcon.vue'
 
 <style scoped>
 .cta-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: linear-gradient(120deg, var(--red) 0%, var(--red-dark) 100%);
   color: #fff;
   padding: 48px 0;
+}
+/* Very subtle water ripples: two rings patterns drifting slowly (transform only). */
+.cta-band::before,
+.cta-band::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0) 0 22px,
+    rgba(255, 255, 255, 0.07) 23px 25px,
+    rgba(255, 255, 255, 0) 26px 46px
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+  mask-image: radial-gradient(circle, #000 20%, transparent 70%);
+  pointer-events: none;
+  animation: ripple 18s linear infinite;
+}
+.cta-band::before {
+  left: -300px;
+  top: -420px;
+}
+.cta-band::after {
+  right: -360px;
+  bottom: -520px;
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+@keyframes ripple {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(8deg);
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+  }
 }
 .cta-inner {
   display: grid;

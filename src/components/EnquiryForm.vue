@@ -3,6 +3,7 @@ import { computed, reactive, ref, useId } from 'vue'
 import { t, pick } from '../i18n.js'
 import { states } from '../data/areas.js'
 import { business, primaryPhone, formatPhone, telLink } from '../data/business.js'
+import { prefersReducedMotion } from '../motion.js'
 import AppIcon from './AppIcon.vue'
 
 const props = defineProps({
@@ -10,7 +11,7 @@ const props = defineProps({
   district: { type: String, default: '' },
 })
 
-const WORK_TYPES = ['borewell', 'openwell', 'repair', 'survey']
+const WORK_TYPES = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 const OTHER = 'Other Tamil Nadu district'
 const ENDPOINT = 'https://api.web3forms.com/submit'
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
@@ -20,11 +21,13 @@ const form = reactive({
   name: '',
   phone: '',
   district: props.district,
-  work: 'borewell',
+  work: 'openwell',
   message: '',
 })
 const errors = reactive({ name: '', phone: '', district: '' })
 const status = ref('idle') // idle | sending | success | error | notConfigured
+// Brief "sent" state: the submit button turns into a green tick before the thank-you note.
+const sent = ref(false)
 
 const subject = computed(
   () => `New enquiry - ${business.name} website - ${form.district || 'District not selected'}`,
@@ -86,8 +89,15 @@ async function onSubmit(event) {
     })
     const json = await res.json().catch(() => ({}))
     if (res.ok && json.success) {
-      status.value = 'success'
-      Object.assign(form, { name: '', phone: '', message: '', work: 'borewell' })
+      sent.value = true
+      setTimeout(
+        () => {
+          sent.value = false
+          status.value = 'success'
+          Object.assign(form, { name: '', phone: '', message: '', work: 'openwell' })
+        },
+        prefersReducedMotion() ? 0 : 900,
+      )
     } else {
       status.value = 'error'
     }
@@ -98,15 +108,17 @@ async function onSubmit(event) {
 
 // Emails always go out in English so the office reads one format.
 const WORK_EN = {
-  borewell: 'New borewell',
-  openwell: 'Open well',
-  repair: 'Repair',
-  survey: 'Water survey',
+  openwell: 'New open well digging',
+  deepening: 'Well deepening',
+  wall: 'Well wall construction',
+  cleaning: 'Old well cleaning & desilting',
+  survey: 'Water point survey',
 }
 </script>
 
 <template>
   <div class="enquiry">
+    <Transition name="swap" mode="out-in">
     <div v-if="status === 'success'" class="notice notice-success" role="status" aria-live="polite">
       <AppIcon name="check" :size="28" />
       <div>
@@ -129,8 +141,7 @@ const WORK_EN = {
         aria-hidden="true"
       />
 
-      <div class="field">
-        <label :for="`${id}-name`">{{ t('form.name') }} <span aria-hidden="true">*</span></label>
+      <div :class="['field', 'float', { 'has-error': errors.name }]">
         <input
           :id="`${id}-name`"
           v-model="form.name"
@@ -142,11 +153,15 @@ const WORK_EN = {
           :aria-invalid="errors.name ? 'true' : 'false'"
           :aria-describedby="errors.name ? `${id}-name-err` : undefined"
         />
-        <p v-if="errors.name" :id="`${id}-name-err`" class="field-error">{{ errors.name }}</p>
+        <label :for="`${id}-name`" class="float-label">
+          {{ t('form.name') }} <span aria-hidden="true">*</span>
+        </label>
+        <Transition name="drop">
+          <p v-if="errors.name" :id="`${id}-name-err`" class="field-error">{{ errors.name }}</p>
+        </Transition>
       </div>
 
-      <div class="field">
-        <label :for="`${id}-phone`">{{ t('form.phone') }} <span aria-hidden="true">*</span></label>
+      <div :class="['field', 'float', { 'has-error': errors.phone }]">
         <div class="phone-wrap">
           <span class="phone-prefix" aria-hidden="true">+91</span>
           <input
@@ -162,12 +177,16 @@ const WORK_EN = {
             :aria-invalid="errors.phone ? 'true' : 'false'"
             :aria-describedby="errors.phone ? `${id}-phone-err` : undefined"
           />
+          <label :for="`${id}-phone`" class="float-label">
+            {{ t('form.phone') }} <span aria-hidden="true">*</span>
+          </label>
         </div>
-        <p v-if="errors.phone" :id="`${id}-phone-err`" class="field-error">{{ errors.phone }}</p>
+        <Transition name="drop">
+          <p v-if="errors.phone" :id="`${id}-phone-err`" class="field-error">{{ errors.phone }}</p>
+        </Transition>
       </div>
 
-      <div class="field">
-        <label :for="`${id}-district`">{{ t('form.district') }} <span aria-hidden="true">*</span></label>
+      <div :class="['field', 'float', { 'has-error': errors.district }]">
         <select
           :id="`${id}-district`"
           v-model="form.district"
@@ -184,9 +203,14 @@ const WORK_EN = {
           </optgroup>
           <option :value="OTHER">{{ t('form.otherDistrict') }}</option>
         </select>
-        <p v-if="errors.district" :id="`${id}-district-err`" class="field-error">
-          {{ errors.district }}
-        </p>
+        <label :for="`${id}-district`" class="float-label">
+          {{ t('form.district') }} <span aria-hidden="true">*</span>
+        </label>
+        <Transition name="drop">
+          <p v-if="errors.district" :id="`${id}-district-err`" class="field-error">
+            {{ errors.district }}
+          </p>
+        </Transition>
       </div>
 
       <fieldset class="field">
@@ -199,8 +223,7 @@ const WORK_EN = {
         </div>
       </fieldset>
 
-      <div class="field">
-        <label :for="`${id}-message`">{{ t('form.message') }}</label>
+      <div class="field float">
         <textarea
           :id="`${id}-message`"
           v-model="form.message"
@@ -208,8 +231,10 @@ const WORK_EN = {
           rows="3"
           :placeholder="t('form.messagePlaceholder')"
         ></textarea>
+        <label :for="`${id}-message`" class="float-label">{{ t('form.message') }}</label>
       </div>
 
+      <Transition name="drop">
       <div
         v-if="status === 'error' || status === 'notConfigured'"
         class="notice notice-error"
@@ -226,13 +251,22 @@ const WORK_EN = {
           </a>
         </div>
       </div>
+      </Transition>
 
-      <button type="submit" class="btn btn-red btn-block" :disabled="status === 'sending'">
-        <span v-if="status === 'sending'" class="spinner" aria-hidden="true"></span>
-        {{ status === 'sending' ? t('form.sending') : t('form.submit') }}
+      <button
+        type="submit"
+        :class="['btn', 'btn-red', 'btn-block', 'submit-btn', { 'is-sent': sent }]"
+        :disabled="status === 'sending' || sent"
+      >
+        <span class="submit-label">
+          <span v-if="status === 'sending'" class="spinner" aria-hidden="true"></span>
+          {{ status === 'sending' ? t('form.sending') : t('form.submit') }}
+        </span>
+        <span class="submit-tick" aria-hidden="true"><AppIcon name="check" :size="28" /></span>
       </button>
       <p class="privacy-line">{{ t('form.privacyLine') }}</p>
     </form>
+    </Transition>
   </div>
 </template>
 
@@ -265,11 +299,16 @@ textarea {
   min-height: 52px;
   padding: 12px 14px;
   border: 1.5px solid #c9bda9;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: #fff;
   color: var(--ink);
   font: inherit;
   font-size: 1.05rem;
+  outline: 3px solid transparent;
+  outline-offset: 0;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    outline-color var(--dur-fast) var(--ease);
 }
 textarea {
   min-height: 96px;
@@ -279,7 +318,155 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: 3px solid rgba(23, 83, 122, 0.25);
+  outline-offset: 0;
   border-color: var(--blue);
+  animation: none;
+}
+
+/* Floating labels: the label rests inside the empty field and floats up onto the border
+   on focus or once filled. Pure CSS (:placeholder-shown), so it works before JS loads. */
+.float {
+  position: relative;
+}
+.float-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  max-width: calc(100% - 24px);
+  margin: 0;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 1.05rem;
+  line-height: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  transform-origin: left top;
+  transform: translate(var(--label-x, 9px), 13px);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+.float input::placeholder,
+.float textarea::placeholder {
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.float input:focus::placeholder,
+.float textarea:focus::placeholder {
+  opacity: 1;
+}
+.float :is(input, textarea):focus + .float-label,
+.float :is(input, textarea):not(:placeholder-shown) + .float-label,
+.float select + .float-label {
+  transform: translate(calc(var(--label-x, 9px) - 2px), -12px) scale(0.82);
+  font-weight: 600;
+  color: var(--ink);
+}
+.float :is(input, textarea, select):focus + .float-label {
+  color: var(--blue);
+}
+.float [aria-invalid='true'] + .float-label {
+  color: var(--red);
+}
+
+/* invalid field: one small horizontal shake */
+.has-error {
+  animation: shake 420ms var(--ease);
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+/* error / notice messages slide down and fade in */
+.drop-enter-active {
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+.drop-leave-active {
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.drop-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.drop-leave-to {
+  opacity: 0;
+}
+/* form <-> thank-you note */
+.swap-enter-active,
+.swap-leave-active {
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.swap-enter-active {
+  transition-duration: var(--dur-slow);
+}
+.swap-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.swap-leave-to {
+  opacity: 0;
+}
+
+/* submit: spinner while sending, then a green tick */
+.submit-btn {
+  overflow: hidden;
+}
+.submit-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.submit-tick {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.4);
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+.submit-btn.is-sent {
+  background: var(--wa);
+  opacity: 1;
+  cursor: default;
+}
+.submit-btn.is-sent .submit-label {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+.submit-btn.is-sent .submit-tick {
+  opacity: 1;
+  transform: scale(1);
 }
 [aria-invalid='true'] {
   border-color: var(--red) !important;
@@ -288,10 +475,16 @@ textarea:focus {
   display: flex;
   align-items: stretch;
 }
+.phone-wrap {
+  position: relative;
+  --label-x: 67px; /* clear the +91 box */
+}
 .phone-prefix {
   display: grid;
   place-items: center;
-  padding: 0 12px;
+  flex: none;
+  width: 58px;
+  padding: 0;
   border: 1.5px solid #c9bda9;
   border-right: 0;
   border-radius: 10px 0 0 10px;
@@ -309,10 +502,14 @@ textarea:focus {
 }
 .work-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* one column on narrow phones: the Tamil work names are single long words */
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 .work-option {
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -325,6 +522,10 @@ textarea:focus {
   font-weight: 500;
   cursor: pointer;
   line-height: 1.25;
+  min-width: 0;
+}
+.work-option:hover {
+  border-color: var(--blue);
 }
 .work-option:has(input:checked) {
   border-color: var(--blue);
@@ -355,7 +556,7 @@ textarea:focus {
   gap: 12px;
   align-items: flex-start;
   padding: 16px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 .notice-title {
   margin: 0 0 10px;
@@ -391,6 +592,11 @@ textarea:focus {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+@media (min-width: 480px) {
+  .work-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (min-width: 560px) {
