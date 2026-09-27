@@ -24,11 +24,26 @@ function watchPhotos() {
   }
 }
 
-export default defineConfig({
-  plugins: [vue(), watchPhotos()],
+export default defineConfig(async ({ mode }) => ({
+  plugins: [
+    vue(),
+    watchPhotos(),
+    // `npm run analyze`: writes stats.html (bundle treemap with gzip/brotli sizes) and opens it.
+    mode === 'analyze' &&
+      (await import('rollup-plugin-visualizer')).visualizer({
+        filename: 'stats.html',
+        gzipSize: true,
+        brotliSize: true,
+        open: !process.env.CI && !process.env.NO_OPEN,
+      }),
+  ],
   ssgOptions: {
     script: 'async',
     formatting: 'minify',
+    // Critical CSS is inlined per page, the rest loads at the end of <body>. Font preloads are
+    // off here: App.vue preloads only the fonts the first screen uses; the others load on demand.
+    // reduceInlineStyles: false keeps index.html's inline fallback @font-face rules intact.
+    beastiesOptions: { preloadFonts: false, reduceInlineStyles: false },
     // Writes /contact/index.html etc. so clean URLs work on every static host.
     dirStyle: 'nested',
     includedRoutes(paths) {
@@ -37,4 +52,4 @@ export default defineConfig({
       return [...staticPaths, ...districtPaths, '/404']
     },
   },
-})
+}))

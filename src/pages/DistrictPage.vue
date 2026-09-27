@@ -1,17 +1,24 @@
 <script setup>
-import { computed, ref, watch, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useRoute } from 'vue-router'
 import { lang, t, tMeta, pick } from '../i18n.js'
 import { findDistrict } from '../data/areas.js'
 import { business, telLink, waLink, primaryPhone, formatPhone } from '../data/business.js'
-import { heroPhoto } from '../data/photos.js'
+import { useHead } from '@unhead/vue'
+import { heroPhoto, heroPreloadLink, HERO_SIZES } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { registerHero, unregisterHero } from '../motion.js'
 import AppIcon from '../components/AppIcon.vue'
+import SectionLink from '../components/SectionLink.vue'
+import ResponsiveImage from '../components/ResponsiveImage.vue'
 import ServiceCards from '../components/ServiceCards.vue'
 import AreaList from '../components/AreaList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
-import ReviewsSection from '../components/ReviewsSection.vue'
+// Pre-rendered like the rest of the page; its script loads only when it scrolls into view.
+const ReviewsSection = defineAsyncComponent({
+  loader: () => import('../components/ReviewsSection.vue'),
+  hydrate: hydrateOnVisible({ rootMargin: '200px' }),
+})
 import NotFound from './NotFound.vue'
 
 const route = useRoute()
@@ -36,6 +43,7 @@ const vars = computed(() => {
 
 if (district.value) {
   const v = vars.value
+  useHead({ link: heroPreloadLink() })
   usePageMeta({
     title: tMeta('meta.districtTitle', v),
     description: tMeta('meta.districtDesc', v),
@@ -65,13 +73,21 @@ if (district.value) {
     <section
       ref="hero"
       class="district-hero"
-      :style="heroPhoto ? { '--hero-photo': `url('${heroPhoto.src}')` } : undefined"
     >
+      <!-- decorative: the page heading describes the page -->
+      <ResponsiveImage
+        v-if="heroPhoto"
+        :image="heroPhoto"
+        :sizes="HERO_SIZES"
+        alt=""
+        fetchpriority="high"
+        class="district-hero-img"
+      />
       <div class="container">
         <nav class="crumbs" :aria-label="t('a11y.breadcrumb')">
           <RouterLink to="/">{{ t('nav.home') }}</RouterLink>
           <span aria-hidden="true">/</span>
-          <RouterLink to="/#areas">{{ pick(district.state.name) }}</RouterLink>
+          <SectionLink section="areas">{{ pick(district.state.name) }}</SectionLink>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{{ pick(district.name) }}</span>
         </nav>
@@ -143,13 +159,28 @@ if (district.value) {
 /* same photo + dark overlay treatment as the home hero */
 /* slides up under the sticky (transparent) header */
 .district-hero {
+  position: relative;
+  isolation: isolate;
   margin-top: calc(-1 * var(--header-h));
   padding: calc(20px + var(--header-h)) 0 44px;
   color: #fff;
-  background:
-    linear-gradient(90deg, rgba(20, 16, 12, 0.9) 0%, rgba(20, 16, 12, 0.72) 60%, rgba(20, 16, 12, 0.5) 100%),
-    var(--hero-photo, none) center / cover no-repeat,
-    var(--ink);
+  background: var(--ink);
+}
+/* :deep: the <img> is inside ResponsiveImage's <picture>, which carries no scope id */
+.district-hero :deep(.district-hero-img) {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.district-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(20, 16, 12, 0.9) 0%, rgba(20, 16, 12, 0.72) 60%, rgba(20, 16, 12, 0.5) 100%);
 }
 .crumbs {
   display: flex;

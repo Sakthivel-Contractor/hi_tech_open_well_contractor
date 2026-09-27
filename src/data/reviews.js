@@ -12,9 +12,9 @@
 //   date      when it was given, e.g. '2026-09' (kept for your records, not shown)
 //   photo     optional customer photo, e.g. '/images/reviews/ravi.jpg' (small square photo).
 //             Without one, a circle with the first letter of the name is shown.
-//   isSample  true = demo review for showing the design, NOT a real customer. It gets a
-//             "மாதிரி / Sample" badge, is never counted in the rating or review count, and is
-//             hidden when VITE_SHOW_SAMPLE_REVIEWS=false. Delete the sample entries before going live.
+//   isSample  true = demo review for showing the design, NOT a real customer. It is never
+//             counted in the rating or review count, and is hidden when
+//             VITE_SHOW_SAMPLE_REVIEWS=false. Delete the sample entries before going live.
 //
 // Any text field can be a plain string, or { ta: '...', en: '...' } to show a different text
 // on the Tamil and English site.
