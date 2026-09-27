@@ -1,36 +1,57 @@
 <script setup>
 import { lang, t, messages, pick } from '../i18n.js'
-import { servicePhoto, photoAlt } from '../data/photos.js'
+import { servicePhoto, workPhotos, photoAlt } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
 
-// Order matters: public/images/service-1.jpg is the first card, service-2.jpg the second...
-const services = ['borewell', 'openwell', 'repair', 'survey']
+// Each card and the photo it shows: photo 1 -> public/images/service-1.jpg, and so on.
+// `fallback`: a gallery photo to show until that service-N.jpg is added.
+const services = [
+  { key: 'openwell', photo: 1 },
+  { key: 'deepening', photo: 4 },
+  { key: 'wall', photo: 2 },
+  { key: 'cleaning', photo: 3 },
+  { key: 'survey', photo: 5, fallback: 'work-2' },
+].map((s) => ({ ...s, image: cardImage(s) }))
+
+// { src, width, height, altName } for a card, or null (then the icon box is shown).
+function cardImage({ photo, fallback }) {
+  const own = servicePhoto(photo)
+  if (own) return { ...own, altName: `service-${photo}` }
+  const work = workPhotos.find((p) => p.name === fallback)
+  // the 600 px gallery tile is plenty for a card
+  return work ? { src: work.tile, width: work.width, height: work.height, altName: work.name } : null
+}
 // The "other language" name is shown under the main name, so farmers see both.
 const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[key].name
 </script>
 
 <template>
   <ul class="service-grid">
-    <li v-for="(key, i) in services" :key="key" class="service-card">
-      <img
-        v-if="servicePhoto(i)"
-        :src="servicePhoto(i).src"
-        :alt="pick(photoAlt(`service-${i + 1}`))"
-        :width="servicePhoto(i).width"
-        :height="servicePhoto(i).height"
-        loading="lazy"
-        decoding="async"
-        class="service-img"
-      />
-      <!-- no photo yet: plain colour box with the service icon -->
-      <div v-else class="service-img service-img-empty">
-        <AppIcon :name="key" :size="64" />
-      </div>
-      <div class="service-body">
-        <span class="service-icon"><AppIcon :name="key" :size="26" /></span>
-        <h3>{{ t(`services.${key}.name`) }}</h3>
-        <p class="service-alt" :lang="lang === 'en' ? 'ta' : 'en'">{{ altName(key) }}</p>
-        <p>{{ t(`services.${key}.desc`) }}</p>
+    <li v-for="({ key, image }, i) in services" :key="key" v-reveal="i" class="service-item">
+      <div class="service-card">
+        <div class="service-media img-placeholder">
+          <img
+            v-if="image"
+            v-fade-img
+            :src="image.src"
+            :alt="pick(photoAlt(image.altName))"
+            :width="image.width"
+            :height="image.height"
+            loading="lazy"
+            decoding="async"
+            class="service-img"
+          />
+          <!-- no photo yet: plain colour box with the service icon -->
+          <div v-else class="service-img service-img-empty">
+            <AppIcon :name="key" :size="64" />
+          </div>
+        </div>
+        <div class="service-body">
+          <span class="service-icon"><AppIcon :name="key" :size="26" /></span>
+          <h3>{{ t(`services.${key}.name`) }}</h3>
+          <p class="service-alt" :lang="lang === 'en' ? 'ta' : 'en'">{{ altName(key) }}</p>
+          <p>{{ t(`services.${key}.desc`) }}</p>
+        </div>
       </div>
     </li>
   </ul>
@@ -46,30 +67,69 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
   /* every card gets the same height, whatever the text length */
   grid-auto-rows: 1fr;
 }
+.service-item {
+  height: 100%;
+}
 .service-card {
+  position: relative;
+  isolation: isolate;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
-.service-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: #d3c6b1;
+/* deeper hover shadow on its own layer, faded in (no box-shadow animation) */
+.service-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.service-media {
+  flex: none;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .service-card:hover {
+    transform: translateY(-6px);
+    border-color: #d3c6b1;
+  }
+  .service-card:hover::after {
+    opacity: 1;
+  }
+  .service-card:hover .service-img {
+    transform: scale(1.06);
+  }
+}
+/* touch: a subtle press instead of hover */
+@media (hover: none) {
+  .service-card:active {
+    transform: scale(0.98);
+  }
 }
 .service-img {
   flex: none;
   display: block;
+  transition:
+    transform var(--dur-slow) var(--ease),
+    opacity var(--dur-slow) var(--ease);
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  background: #d9cfbf;
 }
 .service-img-empty {
   display: grid;

@@ -26,7 +26,7 @@ export const business = {
 export const primaryPhone = business.phones[0]
 export const telLink = (num = primaryPhone) => `tel:+91${num}`
 const waMessage = encodeURIComponent(
-  `Hi ${business.name}, I need details about open well / borewell work`,
+  `Hi ${business.name}, I need details about open well work`,
 )
 export const waLink = (num = business.whatsapp[0]) => `https://wa.me/91${num}?text=${waMessage}`
 export const formatPhone = (num) => `+91 ${num.slice(0, 5)} ${num.slice(5)}`

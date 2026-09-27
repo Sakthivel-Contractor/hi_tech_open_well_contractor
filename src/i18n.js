@@ -34,11 +34,11 @@ export const messages = {
     langToggleLabel: 'Switch language',
     a11y: { keyFacts: 'Key facts', breadcrumb: 'Breadcrumb', mainNav: 'Main' },
 
-    heroTitle: 'Borewell & open well digging you can trust',
-    heroTamilLine: 'கிணறு & ஆழ்துளை கிணறு வெட்டுதல்',
+    heroTitle: 'Open well digging you can trust',
+    heroTamilLine: 'நம்பகமான கிணறு வெட்டும் சேவை',
     heroBadge: 'Free site visit & water point survey',
     heroText:
-      'New open wells, borewells, repair and water point survey for farms and homes across Tamil Nadu and Bengaluru.',
+      'New open wells, well deepening, wall construction and old well cleaning for farms and homes across Tamil Nadu and Bengaluru.',
     heroCta: 'Book free site visit',
     callUs: 'Call us',
 
@@ -47,21 +47,25 @@ export const messages = {
     servicesTitle: 'Our services',
     servicesIntro: 'One team for the full job, from finding water to fixing an old well.',
     services: {
-      borewell: {
-        name: 'New borewell',
-        desc: 'Truck-mounted rig drilling with PVC casing, for farms, homes and plots.',
-      },
       openwell: {
-        name: 'Open well',
-        desc: 'New open wells dug and lined with stone or concrete rings, plus deepening of old wells.',
+        name: 'New open well digging',
+        desc: 'New open wells dug to the right size and depth for farms, homes and plots.',
       },
-      repair: {
-        name: 'Repair & flushing',
-        desc: 'Borewell flushing, re-boring, pump lowering and removal, and old well cleaning.',
+      deepening: {
+        name: 'Well deepening',
+        desc: 'Old wells dug deeper with an excavator to reach more water.',
+      },
+      wall: {
+        name: 'Well wall construction',
+        desc: 'Strong stone or concrete ring walls built around the well to stop it caving in.',
+      },
+      cleaning: {
+        name: 'Old well cleaning & desilting',
+        desc: 'Silt, stones and plants cleared from old wells so the water flows again.',
       },
       survey: {
         name: 'Water point survey',
-        desc: 'Ground survey with a resistivity meter to choose the best point before you drill.',
+        desc: 'Ground survey with a resistivity meter to choose the best point before you dig.',
       },
     },
 
@@ -104,10 +108,11 @@ export const messages = {
       message: 'Message (optional)',
       messagePlaceholder: 'Village, land size, depth of nearby wells, anything else',
       works: {
-        borewell: 'New borewell',
-        openwell: 'Open well',
-        repair: 'Repair',
-        survey: 'Water survey',
+        openwell: 'New open well digging',
+        deepening: 'Well deepening',
+        wall: 'Well wall construction',
+        cleaning: 'Old well cleaning & desilting',
+        survey: 'Water point survey',
       },
       submit: 'Send enquiry',
       sending: 'Sending...',
@@ -137,10 +142,10 @@ export const messages = {
     whatsappFloat: 'Chat on WhatsApp',
 
     district: {
-      title: 'Borewell drilling in {district}',
-      tamilTitle: '{districtTa} பகுதியில் ஆழ்துளை கிணறு அமைத்தல்',
+      title: 'Open well digging in {district}',
+      tamilTitle: '{districtTa} பகுதியில் கிணறு வெட்டுதல்',
       intro:
-        'HI Tech Open Well Contractor drills borewells, digs open wells and repairs old wells in {district}, {state}. We have over 40 years of experience and more than 400 wells completed.',
+        'HI Tech Open Well Contractor digs new open wells, deepens and cleans old wells and builds well walls in {district}, {state}. We have over 40 years of experience and more than 400 wells completed.',
       servicesHere: 'Services in {district}',
       nearby: 'Towns we cover near {district}',
       enquiry: 'Enquiry for {district}',
@@ -169,15 +174,15 @@ export const messages = {
     notFound: { title: 'Page not found', back: 'Go to home page' },
 
     meta: {
-      homeTitle: 'HI Tech Open Well Contractor | Open Well & Borewell Digging, Tiruchengode',
+      homeTitle: 'HI Tech Open Well Contractor | Open Well Digging, Tiruchengode',
       homeDesc:
-        'Open well digging, borewell drilling, repair and water point survey in Tamil Nadu and Bengaluru. 40+ years, 400+ wells. Free site visit. Call +91 95850 85036.',
-      districtTitle: 'Borewell Drilling in {district}, {state} | HI Tech Open Well Contractor',
+        'Open well digging, well deepening, wall construction, old well cleaning and water point survey in Tamil Nadu and Bengaluru. 40+ years, 400+ wells. Free site visit. Call +91 95850 85036.',
+      districtTitle: 'Open Well Digging in {district}, {state} | HI Tech Open Well Contractor',
       districtDesc:
-        'Borewell drilling and open well digging in {district} and nearby {towns}. Free site visit and water point survey. 40+ years experience. Call +91 95850 85036.',
+        'Open well digging, well deepening and old well cleaning in {district} and nearby {towns}. Free site visit and water point survey. 40+ years experience. Call +91 95850 85036.',
       contactTitle: 'Contact | HI Tech Open Well Contractor',
       contactDesc:
-        'Call or WhatsApp HI Tech Open Well Contractor, Tiruchengode, for open well and borewell work. Phone +91 95850 85036 or +91 63741 14224.',
+        'Call or WhatsApp HI Tech Open Well Contractor, Tiruchengode, for open well work. Phone +91 95850 85036 or +91 63741 14224.',
       privacyTitle: 'Privacy Policy | HI Tech Open Well Contractor',
       privacyDesc:
         'How HI Tech Open Well Contractor uses the details you send through the enquiry form: only to call you back.',
@@ -192,11 +197,11 @@ export const messages = {
     langToggleLabel: 'மொழியை மாற்று',
     a11y: { keyFacts: 'முக்கிய தகவல்கள்', breadcrumb: 'பக்க வழி', mainNav: 'முதன்மை மெனு' },
 
-    heroTitle: 'நம்பிக்கையான ஆழ்துளை & திறந்த கிணறு வெட்டுதல்',
-    heroTamilLine: 'Borewell & open well digging',
+    heroTitle: 'நம்பகமான கிணறு வெட்டும் சேவை',
+    heroTamilLine: 'Open well digging you can trust',
     heroBadge: 'இலவச இட ஆய்வு & நீர் புள்ளி கணிப்பு',
     heroText:
-      'தமிழ்நாடு மற்றும் பெங்களூருவில் தோட்டங்கள், வீடுகளுக்கு புதிய திறந்த கிணறு, ஆழ்துளை கிணறு, பழுது பார்த்தல், நீர் புள்ளி ஆய்வு.',
+      'புதிய கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர் கட்டுதல், பழைய கிணறு தூர்வாருதல் – தமிழ்நாடு மற்றும் பெங்களூரு முழுவதும்.',
     heroCta: 'இலவச இட ஆய்வுக்கு பதிவு செய்க',
     callUs: 'அழைக்கவும்',
 
@@ -205,21 +210,25 @@ export const messages = {
     servicesTitle: 'எங்கள் சேவைகள்',
     servicesIntro: 'தண்ணீர் கண்டறிவது முதல் பழைய கிணற்றைச் சரிசெய்வது வரை, முழு வேலைக்கும் ஒரே குழு.',
     services: {
-      borewell: {
-        name: 'புதிய ஆழ்துளை கிணறு',
-        desc: 'லாரி ரிக் மூலம் துளையிட்டு PVC கேசிங் பொருத்துதல். தோட்டம், வீடு, மனைகளுக்கு.',
-      },
       openwell: {
-        name: 'திறந்த கிணறு',
-        desc: 'புதிய திறந்த கிணறு வெட்டி கல் அல்லது கான்கிரீட் வளையம் அமைத்தல், பழைய கிணறு ஆழப்படுத்துதல்.',
+        name: 'புதிய கிணறு வெட்டுதல்',
+        desc: 'தோட்டம், வீடு, மனைகளுக்கு சரியான அளவு மற்றும் ஆழத்தில் புதிய கிணறு வெட்டுதல்.',
       },
-      repair: {
-        name: 'பழுது & சுத்தம் செய்தல்',
-        desc: 'ஆழ்துளை கிணறு ஃப்ளஷிங், மறு துளையிடுதல், மோட்டார் இறக்குதல் & எடுத்தல், பழைய கிணறு சுத்தம்.',
+      deepening: {
+        name: 'கிணறு ஆழப்படுத்துதல்',
+        desc: 'அதிக தண்ணீர் கிடைக்க, பழைய கிணற்றை பொக்லைன் மூலம் மேலும் ஆழப்படுத்துதல்.',
+      },
+      wall: {
+        name: 'கிணறு சுற்றுச்சுவர் கட்டுதல்',
+        desc: 'கிணறு இடிந்து விழாமல் இருக்க கல் அல்லது கான்கிரீட் வளையச் சுவர் கட்டுதல்.',
+      },
+      cleaning: {
+        name: 'பழைய கிணறு தூர்வாருதல்',
+        desc: 'பழைய கிணற்றில் உள்ள சேறு, கற்கள், செடிகளை அகற்றி மீண்டும் தண்ணீர் ஊற வைத்தல்.',
       },
       survey: {
-        name: 'நீர் புள்ளி ஆய்வு',
-        desc: 'துளையிடும் முன் சிறந்த இடத்தைத் தேர்வு செய்ய ரெசிஸ்டிவிட்டி மீட்டர் மூலம் நில ஆய்வு.',
+        name: 'நிலத்தடி நீர் ஆய்வு',
+        desc: 'கிணறு வெட்டும் முன் சிறந்த இடத்தைத் தேர்வு செய்ய ரெசிஸ்டிவிட்டி மீட்டர் மூலம் நில ஆய்வு.',
       },
     },
 
@@ -262,10 +271,11 @@ export const messages = {
       message: 'செய்தி (விருப்பம்)',
       messagePlaceholder: 'ஊர், நில அளவு, அருகிலுள்ள கிணறுகளின் ஆழம், மற்ற விவரங்கள்',
       works: {
-        borewell: 'புதிய ஆழ்துளை கிணறு',
-        openwell: 'திறந்த கிணறு',
-        repair: 'பழுது பார்த்தல்',
-        survey: 'நீர் ஆய்வு',
+        openwell: 'புதிய கிணறு வெட்டுதல்',
+        deepening: 'கிணறு ஆழப்படுத்துதல்',
+        wall: 'கிணறு சுற்றுச்சுவர் கட்டுதல்',
+        cleaning: 'பழைய கிணறு தூர்வாருதல்',
+        survey: 'நிலத்தடி நீர் ஆய்வு',
       },
       submit: 'அனுப்பு',
       sending: 'அனுப்புகிறது...',
@@ -295,10 +305,10 @@ export const messages = {
     whatsappFloat: 'வாட்ஸ்அப்பில் பேசுங்கள்',
 
     district: {
-      title: '{districtTa} பகுதியில் ஆழ்துளை கிணறு அமைத்தல்',
-      tamilTitle: 'Borewell drilling in {district}',
+      title: '{districtTa} பகுதியில் கிணறு வெட்டுதல்',
+      tamilTitle: 'Open well digging in {district}',
       intro:
-        'HI Tech Open Well Contractor நிறுவனம் {stateTa}, {districtTa} பகுதியில் ஆழ்துளை கிணறு அமைத்தல், திறந்த கிணறு வெட்டுதல், பழைய கிணறு பழுது பார்த்தல் ஆகிய பணிகளைச் செய்கிறது. 40 ஆண்டுகளுக்கு மேல் அனுபவம், 400-க்கும் மேற்பட்ட கிணறுகள் முடித்துள்ளோம்.',
+        'HI Tech Open Well Contractor நிறுவனம் {stateTa}, {districtTa} பகுதியில் புதிய கிணறு வெட்டுதல், கிணறு ஆழப்படுத்துதல், சுற்றுச்சுவர் கட்டுதல், பழைய கிணறு தூர்வாருதல் ஆகிய பணிகளைச் செய்கிறது. 40 ஆண்டுகளுக்கு மேல் அனுபவம், 400-க்கும் மேற்பட்ட கிணறுகள் முடித்துள்ளோம்.',
       servicesHere: '{districtTa} பகுதியில் எங்கள் சேவைகள்',
       nearby: '{districtTa} அருகில் நாங்கள் வரும் ஊர்கள்',
       enquiry: '{districtTa} பகுதிக்கான விசாரணை',
@@ -327,15 +337,15 @@ export const messages = {
     notFound: { title: 'பக்கம் கிடைக்கவில்லை', back: 'முகப்புப் பக்கத்துக்குச் செல்' },
 
     meta: {
-      homeTitle: 'HI Tech Open Well Contractor | கிணறு வெட்டுதல் & ஆழ்துளை கிணறு, திருச்செங்கோடு',
+      homeTitle: 'HI Tech Open Well Contractor | கிணறு வெட்டுதல், திருச்செங்கோடு',
       homeDesc:
-        'தமிழ்நாடு மற்றும் பெங்களூருவில் திறந்த கிணறு வெட்டுதல், ஆழ்துளை கிணறு, பழுது பார்த்தல், நீர் புள்ளி ஆய்வு. 40+ ஆண்டு அனுபவம், 400+ கிணறுகள். இலவச இட ஆய்வு. அழைக்க +91 95850 85036.',
-      districtTitle: '{districtTa} கிணறு வெட்டுதல் & ஆழ்துளை கிணறு | HI Tech Open Well Contractor',
+        'தமிழ்நாடு மற்றும் பெங்களூருவில் புதிய கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர் கட்டுதல், பழைய கிணறு தூர்வாருதல், நிலத்தடி நீர் ஆய்வு. 40+ ஆண்டு அனுபவம், 400+ கிணறுகள். இலவச இட ஆய்வு. அழைக்க +91 95850 85036.',
+      districtTitle: '{districtTa} பகுதியில் கிணறு வெட்டுதல் | HI Tech Open Well Contractor',
       districtDesc:
-        '{districtTa} மற்றும் அருகிலுள்ள {townsTa} பகுதிகளில் திறந்த கிணறு வெட்டுதல், ஆழ்துளை கிணறு அமைத்தல். இலவச இட ஆய்வு, நீர் புள்ளி ஆய்வு. 40+ ஆண்டு அனுபவம். அழைக்க +91 95850 85036.',
+        '{districtTa} மற்றும் அருகிலுள்ள {townsTa} பகுதிகளில் கிணறு வெட்டுதல், ஆழப்படுத்துதல், பழைய கிணறு தூர்வாருதல். இலவச இட ஆய்வு, நீர் புள்ளி ஆய்வு. 40+ ஆண்டு அனுபவம். அழைக்க +91 95850 85036.',
       contactTitle: 'தொடர்பு | HI Tech Open Well Contractor',
       contactDesc:
-        'கிணறு மற்றும் ஆழ்துளை கிணறு வேலைக்கு திருச்செங்கோடு HI Tech Open Well Contractor-ஐ அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். +91 95850 85036, +91 63741 14224.',
+        'கிணறு வெட்டும் வேலைக்கு திருச்செங்கோடு HI Tech Open Well Contractor-ஐ அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். +91 95850 85036, +91 63741 14224.',
       privacyTitle: 'தனியுரிமைக் கொள்கை | HI Tech Open Well Contractor',
       privacyDesc:
         'விசாரணைப் படிவம் மூலம் நீங்கள் அனுப்பும் விவரங்களை HI Tech Open Well Contractor உங்களைத் திரும்ப அழைக்க மட்டுமே பயன்படுத்துகிறது.',

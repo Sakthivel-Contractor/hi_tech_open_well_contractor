@@ -12,9 +12,31 @@
   --wa-dark: #16733e;
   --accent-light: #f0b98c; /* warm highlight on dark backgrounds */
   --alt-bg: #ece4d6;
+  --focus: var(--blue);
+
+  /* Radius scale */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
   --radius: 14px;
-  --shadow-sm: 0 1px 3px rgba(31, 26, 20, 0.06), 0 1px 2px rgba(31, 26, 20, 0.04);
-  --shadow-md: 0 10px 24px rgba(31, 26, 20, 0.12);
+  --radius-pill: 999px;
+
+  /* Layered soft shadows (a tight contact shadow + a wide ambient one) */
+  --shadow-sm: 0 1px 2px rgba(31, 26, 20, 0.05), 0 2px 6px rgba(31, 26, 20, 0.05);
+  --shadow-md: 0 2px 4px rgba(31, 26, 20, 0.05), 0 10px 24px rgba(31, 26, 20, 0.1);
+  --shadow-lg: 0 4px 8px rgba(31, 26, 20, 0.06), 0 18px 40px rgba(31, 26, 20, 0.16);
+
+  /* Motion: one easing everywhere */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 200ms;
+  --dur-slow: 600ms;
+  --reveal-step: 60ms;
+  --reveal-rise: 24px;
+
+  /* Sticky header */
+  --header-h: 64px;
+  --header-shrink: 0.875; /* condensed bar = 56px */
+
   --font-head: 'Bricolage Grotesque', 'Hind Madurai', system-ui, sans-serif;
   --font-body: 'Hind Madurai', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -48,6 +70,35 @@ html {
   *::after {
     transition: none !important;
     animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* Thin brand scrollbar on desktop (mouse) only */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue) var(--alt-bg);
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--alt-bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--blue);
+    border: 2px solid var(--alt-bg);
+    border-radius: var(--radius-pill);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--blue-dark);
   }
 }
 
@@ -95,9 +146,26 @@ a {
   color: var(--blue);
 }
 
+/* Keyboard focus: a clear ring that settles into place */
 :focus-visible {
-  outline: 3px solid var(--red);
-  outline-offset: 2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  animation: focus-in var(--dur-fast) var(--ease);
+}
+@keyframes focus-in {
+  from {
+    outline-offset: 7px;
+    outline-color: transparent;
+  }
+}
+/* dark areas get a light ring */
+.hero,
+.district-hero,
+.stats,
+.cta-band,
+.site-footer,
+.lightbox {
+  --focus: var(--accent-light);
 }
 
 .skip-link {
@@ -116,7 +184,113 @@ a {
 
 /* anchors land below the sticky header */
 [id] {
-  scroll-margin-top: 76px;
+  scroll-margin-top: calc(var(--header-h) + 8px);
+}
+
+/* ---------- Motion ---------- */
+
+/* Route change: fade + slight slide-up */
+.page-enter-active {
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+.page-leave-active {
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* Language switch: page text dips out and back in */
+main,
+.cta-band,
+.site-footer,
+.header-nav,
+.mobile-bar,
+.wa-float {
+  transition: opacity 160ms var(--ease);
+}
+.lang-fade main,
+.lang-fade .cta-band,
+.lang-fade .site-footer,
+.lang-fade .header-nav,
+.lang-fade .mobile-bar,
+.lang-fade .wa-float {
+  opacity: 0;
+}
+
+/* Scroll reveal (v-reveal). Hidden only while JS is running (html.js), so the
+   pre-rendered page always shows everything if scripts fail. */
+.js [data-reveal] {
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+  transition-delay: calc(var(--reveal-i, 0) * var(--reveal-step));
+}
+.js [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(var(--reveal-rise));
+}
+
+/* Lazy images fade in once loaded (v-fade-img); their box keeps a soft sand tint meanwhile */
+.js :where(img[data-fade]) {
+  transition: opacity var(--dur-slow) var(--ease);
+}
+.js img[data-fade]:not(.is-loaded) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal]:not(.is-revealed),
+  .js img[data-fade]:not(.is-loaded) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Mobile call bar: tucked away while hidden. Pages with a hero start tucked (rendered that
+   way, so no flash before the app starts). Without JS the bar simply stays visible. */
+.js .has-hero .mobile-bar:not(.is-ready),
+.js .mobile-bar.is-hidden {
+  transform: translateY(calc(100% + 8px));
+}
+
+/* Soft loading placeholder behind images */
+.img-placeholder {
+  background:
+    radial-gradient(120% 90% at 30% 20%, #efe6d8 0%, transparent 60%),
+    linear-gradient(135deg, #e4d9c7, #d6c9b4);
+}
+
+/* Text links: underline grows from left to right on hover */
+.link-grow {
+  position: relative;
+  text-decoration: none;
+}
+.link-grow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.1em;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.link-grow:hover::after,
+.link-grow:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .container {
@@ -161,6 +335,14 @@ a {
   border-radius: 2px;
   background: var(--red);
 }
+/* the accent rule draws in from the left as the heading is revealed */
+.js .section h2[data-reveal]::after {
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease) 150ms;
+}
+.js .section h2[data-reveal]:not(.is-revealed)::after {
+  transform: scaleX(0);
+}
 .section-intro {
   margin: 0 0 32px;
   color: var(--muted);
@@ -175,6 +357,7 @@ a {
 
 /* Buttons */
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -182,7 +365,7 @@ a {
   min-height: 52px;
   padding: 0 22px;
   border: 2px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font: inherit;
   font-weight: 600;
   font-size: 1.05rem;
@@ -190,15 +373,49 @@ a {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
-    box-shadow 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
 }
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(31, 26, 20, 0.16);
+/* hover shadow lives on a layer that only fades (cheaper than animating box-shadow) */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.btn {
+  isolation: isolate;
+}
+.btn svg {
+  flex: none;
+  transition: transform var(--dur-fast) var(--ease);
+}
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  .btn:hover:not(:disabled)::after {
+    opacity: 1;
+  }
+  .btn:hover:not(:disabled) [data-icon='arrow'] {
+    transform: translateX(4px);
+  }
 }
 .btn:active:not(:disabled) {
-  transform: none;
+  transform: scale(0.97);
+  transition-duration: 100ms;
+}
+.btn:active:not(:disabled)::after {
+  opacity: 0;
 }
 .btn:disabled {
   opacity: 0.75;
