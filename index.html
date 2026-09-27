@@ -12,17 +12,73 @@
         if (!window.__appReady) document.documentElement.classList.remove('js')
       }, 4000)
     </script>
+    <!-- Local fallback fonts, resized to match the web fonts so text does not jump when
+         Hind Madurai / Bricolage Grotesque swap in. Inline (not in fonts.css) so they exist at
+         the very first layout: they also give Tamil text a named system font straight away
+         instead of a slow search through every installed font. Values measured from the font
+         files on sample site text (Android: Roboto / Noto Sans Tamil; Windows: Arial / Nirmala UI;
+         Bricolage 700 vs Roboto Bold estimated). A face whose local() font is missing is skipped. -->
+    <style>
+      @font-face {
+        font-family: 'Hind Fallback Android';
+        src: local('Roboto'), local('Roboto-Regular');
+        size-adjust: 98.07%;
+        ascent-override: 100.13%;
+        descent-override: 40.58%;
+        line-gap-override: 0%;
+        unicode-range: U+0000-00FF, U+2000-206F;
+      }
+      @font-face {
+        font-family: 'Hind Fallback Android';
+        src: local('Noto Sans Tamil'), local('NotoSansTamil-Regular');
+        size-adjust: 98.78%;
+        ascent-override: 99.42%;
+        descent-override: 40.29%;
+        line-gap-override: 0%;
+        unicode-range: U+0B82-0BFA;
+      }
+      @font-face {
+        font-family: 'Hind Fallback Windows';
+        src: local('Arial'), local('ArialMT');
+        size-adjust: 97.33%;
+        ascent-override: 100.9%;
+        descent-override: 40.89%;
+        line-gap-override: 0%;
+        unicode-range: U+0000-00FF, U+2000-206F;
+      }
+      @font-face {
+        font-family: 'Hind Fallback Windows';
+        src: local('Nirmala UI'), local('NirmalaUI');
+        size-adjust: 95.99%;
+        ascent-override: 102.3%;
+        descent-override: 41.46%;
+        line-gap-override: 0%;
+        unicode-range: U+0B82-0BFA;
+      }
+      @font-face {
+        font-family: 'Bricolage Fallback Android';
+        src: local('Roboto Bold'), local('Roboto-Bold');
+        size-adjust: 94.5%;
+        ascent-override: 98.4%;
+        descent-override: 28.6%;
+        line-gap-override: 0%;
+        unicode-range: U+0000-00FF, U+2000-206F;
+      }
+      @font-face {
+        font-family: 'Bricolage Fallback Windows';
+        src: local('Arial Bold'), local('Arial-BoldMT');
+        size-adjust: 91.07%;
+        ascent-override: 102.12%;
+        descent-override: 29.65%;
+        line-gap-override: 0%;
+        unicode-range: U+0000-00FF, U+2000-206F;
+      }
+    </style>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
     <link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Hind+Madurai:wght@400;500;600&display=swap"
-    />
   </head>
   <body>
     <div id="app"></div>

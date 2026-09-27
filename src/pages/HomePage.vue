@@ -1,15 +1,21 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { lang, t, tEn, tMeta, pick } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { states } from '../data/areas.js'
-import { heroPhoto, ogImage, workPhotos, photoAlt } from '../data/photos.js'
+import { useHead } from '@unhead/vue'
+import { heroPhoto, heroPreloadLink, HERO_SIZES, ogImage, workPhotos, photoAlt } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { registerHero, unregisterHero } from '../motion.js'
 import AppIcon from '../components/AppIcon.vue'
+import ResponsiveImage from '../components/ResponsiveImage.vue'
 import ServiceCards from '../components/ServiceCards.vue'
 import WorkGallery from '../components/WorkGallery.vue'
-import ReviewsSection from '../components/ReviewsSection.vue'
+// Pre-rendered like the rest of the page; its script loads only when it scrolls into view.
+const ReviewsSection = defineAsyncComponent({
+  loader: () => import('../components/ReviewsSection.vue'),
+  hydrate: hydrateOnVisible({ rootMargin: '200px' }),
+})
 import AreaList from '../components/AreaList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
 
@@ -53,6 +59,8 @@ const stats = [
   { value: business.states, key: 'states' },
 ]
 
+useHead({ link: heroPreloadLink() })
+
 const hero = ref(null)
 onMounted(() => registerHero(hero.value))
 onBeforeUnmount(unregisterHero)
@@ -61,14 +69,12 @@ onBeforeUnmount(unregisterHero)
 <template>
   <!-- Hero -->
   <section ref="hero" class="hero">
-    <img
+    <ResponsiveImage
       v-if="heroPhoto"
-      :src="heroPhoto.src"
+      :image="heroPhoto"
+      :sizes="HERO_SIZES"
       :alt="pick(photoAlt('hero'))"
-      :width="heroPhoto.width"
-      :height="heroPhoto.height"
       fetchpriority="high"
-      decoding="async"
       class="hero-img"
     />
     <div class="container hero-inner">
@@ -163,7 +169,8 @@ onBeforeUnmount(unregisterHero)
   background: var(--ink);
   color: #fff;
 }
-.hero-img {
+/* :deep: the <img> is inside ResponsiveImage's <picture>, which carries no scope id */
+.hero :deep(.hero-img) {
   position: absolute;
   inset: 0;
   z-index: -2;

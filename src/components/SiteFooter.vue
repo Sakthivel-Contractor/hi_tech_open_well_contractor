@@ -1,7 +1,12 @@
 <script setup>
 import { t, pick } from '../i18n.js'
 import { business, telLink, waLink, formatPhone } from '../data/business.js'
+import { logo } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
+import SectionLink from './SectionLink.vue'
+
+// ~2.5 KB WebP inlined into the page (no extra request); the PNG only if it was not built.
+const logoSrc = logo?.src ?? '/logo.png'
 
 const year = new Date().getFullYear()
 const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
@@ -13,7 +18,7 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
       <div class="footer-brand">
         <span class="footer-logo">
           <img
-            src="/logo.png"
+            :src="logoSrc"
             alt="HI Tech Open Well Contractor logo"
             width="48"
             height="48"
@@ -32,8 +37,8 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
         <p class="footer-heading">{{ t('footer.quickLinks') }}</p>
         <ul>
           <li><RouterLink to="/" class="link-grow">{{ t('nav.home') }}</RouterLink></li>
-          <li><RouterLink to="/#services" class="link-grow">{{ t('nav.services') }}</RouterLink></li>
-          <li><RouterLink to="/#areas" class="link-grow">{{ t('nav.areas') }}</RouterLink></li>
+          <li><SectionLink section="services" class="link-grow">{{ t('nav.services') }}</SectionLink></li>
+          <li><SectionLink section="areas" class="link-grow">{{ t('nav.areas') }}</SectionLink></li>
           <li><RouterLink to="/contact" class="link-grow">{{ t('nav.contact') }}</RouterLink></li>
           <li><RouterLink to="/privacy" class="link-grow">{{ t('footer.privacy') }}</RouterLink></li>
         </ul>
@@ -43,7 +48,7 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
         <p class="footer-heading">{{ t('footer.services') }}</p>
         <ul>
           <li v-for="key in services" :key="key">
-            <RouterLink to="/#services" class="link-grow">{{ t(`services.${key}.name`) }}</RouterLink>
+            <SectionLink section="services" class="link-grow">{{ t(`services.${key}.name`) }}</SectionLink>
           </li>
         </ul>
       </div>

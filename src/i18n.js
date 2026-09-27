@@ -87,7 +87,6 @@ export const messages = {
       starsLabel: '{n} out of 5 stars',
       rateUs: 'Rate us on Google',
       listLabel: 'Customer reviews',
-      sample: 'Sample',
     },
 
     cta: {
@@ -123,6 +122,7 @@ export const messages = {
       success: 'Thanks! We will call you today.',
       another: 'Send another enquiry',
       error: 'Sorry, the enquiry could not be sent. Please call us on {phone}.',
+      timeout: 'Sending is taking too long (slow network). Your details are kept: press Send again, or call us on {phone}.',
       notConfigured: 'The enquiry form is not set up yet. Please call us on {phone}.',
     },
 
@@ -250,7 +250,6 @@ export const messages = {
       starsLabel: '5-க்கு {n} நட்சத்திரங்கள்',
       rateUs: 'Google-ல் எங்களை மதிப்பிடுங்கள்',
       listLabel: 'வாடிக்கையாளர் கருத்துகள்',
-      sample: 'மாதிரி',
     },
 
     cta: {
@@ -286,6 +285,7 @@ export const messages = {
       success: 'நன்றி! இன்றே உங்களை அழைப்போம்.',
       another: 'மற்றொரு விசாரணை அனுப்ப',
       error: 'மன்னிக்கவும், அனுப்ப முடியவில்லை. தயவுசெய்து {phone} என்ற எண்ணில் அழைக்கவும்.',
+      timeout: 'இணையம் மெதுவாக உள்ளதால் அனுப்ப தாமதமாகிறது. நீங்கள் நிரப்பிய விவரங்கள் அப்படியே உள்ளன: மீண்டும் அனுப்பவும் அல்லது {phone} என்ற எண்ணில் அழைக்கவும்.',
       notConfigured: 'படிவம் இன்னும் அமைக்கப்படவில்லை. தயவுசெய்து {phone} என்ற எண்ணில் அழைக்கவும்.',
     },
 

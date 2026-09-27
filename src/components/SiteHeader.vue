@@ -3,7 +3,12 @@ import { computed } from 'vue'
 import { lang, setLang, t } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { useScrollState, prefersReducedMotion } from '../motion.js'
+import { logo } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
+import SectionLink from './SectionLink.vue'
+
+// ~2.5 KB WebP inlined into the page (no extra request); the PNG only if it was not built.
+const logoSrc = logo?.src ?? '/logo.png'
 
 const props = defineProps({
   // true on pages that open with a dark photo hero (home, district pages)
@@ -38,7 +43,7 @@ function switchLang(value) {
     <div class="container header-inner">
       <RouterLink to="/" class="logo">
         <img
-          src="/logo.png"
+          :src="logoSrc"
           alt="HI Tech Open Well Contractor logo"
           class="logo-img"
           width="40"
@@ -48,7 +53,7 @@ function switchLang(value) {
       </RouterLink>
 
       <nav class="header-nav" :aria-label="t('a11y.mainNav')">
-        <RouterLink to="/#areas" class="nav-link">{{ t('nav.areas') }}</RouterLink>
+        <SectionLink section="areas" class="nav-link">{{ t('nav.areas') }}</SectionLink>
         <RouterLink to="/contact" class="nav-link">{{ t('nav.contact') }}</RouterLink>
         <a :href="telLink()" class="nav-link header-phone">
           <AppIcon name="phone" :size="18" />

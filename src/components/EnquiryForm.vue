@@ -14,6 +14,7 @@ const props = defineProps({
 const WORK_TYPES = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 const OTHER = 'Other Tamil Nadu district'
 const ENDPOINT = 'https://api.web3forms.com/submit'
+const TIMEOUT_MS = 10000
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
 
 const id = useId()
@@ -25,7 +26,7 @@ const form = reactive({
   message: '',
 })
 const errors = reactive({ name: '', phone: '', district: '' })
-const status = ref('idle') // idle | sending | success | error | notConfigured
+const status = ref('idle') // idle | sending | success | error | timeout | notConfigured
 // Brief "sent" state: the submit button turns into a green tick before the thank-you note.
 const sent = ref(false)
 
@@ -81,11 +82,16 @@ async function onSubmit(event) {
     page: typeof window !== 'undefined' ? window.location.href : '',
   }
 
+  // Give up after 10 s (slow or overloaded network) and show the phone number instead.
+  // The filled-in fields are kept, so the visitor can simply press send again.
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
   try {
     const res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     })
     const json = await res.json().catch(() => ({}))
     if (res.ok && json.success) {
@@ -102,8 +108,23 @@ async function onSubmit(event) {
       status.value = 'error'
     }
   } catch {
-    status.value = 'error'
+    status.value = controller.signal.aborted ? 'timeout' : 'error'
+  } finally {
+    clearTimeout(timer)
   }
+}
+
+// Open the connection to Web3Forms once the visitor starts filling the form, so sending
+// does not wait for DNS + TLS on a slow network. Not on page load: most visitors never send.
+let warmed = false
+function warmUp() {
+  if (warmed) return
+  warmed = true
+  const link = document.createElement('link')
+  link.rel = 'preconnect'
+  link.href = new URL(ENDPOINT).origin
+  link.crossOrigin = ''
+  document.head.appendChild(link)
 }
 
 // Emails always go out in English so the office reads one format.
@@ -129,7 +150,7 @@ const WORK_EN = {
       </div>
     </div>
 
-    <form v-else novalidate @submit.prevent="onSubmit">
+    <form v-else novalidate @submit.prevent="onSubmit" @focusin.once="warmUp">
       <!-- Web3Forms fields -->
       <input type="hidden" name="subject" :value="subject" />
       <input
@@ -236,14 +257,14 @@ const WORK_EN = {
 
       <Transition name="drop">
       <div
-        v-if="status === 'error' || status === 'notConfigured'"
+        v-if="status === 'error' || status === 'timeout' || status === 'notConfigured'"
         class="notice notice-error"
         role="alert"
       >
         <AppIcon name="alert" :size="24" />
         <div>
           <p class="notice-title">
-            {{ t(status === 'error' ? 'form.error' : 'form.notConfigured', { phone: phoneDisplay }) }}
+            {{ t(`form.${status}`, { phone: phoneDisplay }) }}
           </p>
           <a :href="telLink()" class="btn btn-small btn-blue">
             <AppIcon name="phone" :size="18" />

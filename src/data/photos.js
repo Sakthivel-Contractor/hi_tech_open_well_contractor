@@ -1,13 +1,25 @@
 // Your photos, as optimised by scripts/optimize-images.mjs from public/images/.
 // photos.json is generated: do not edit it, just add/replace files in public/images/.
+// Each image is { width, height, avif, webp, src } (see ResponsiveImage.vue).
 import photos from '../generated/photos.json'
 
-export const heroPhoto = photos.hero // { src, width, height } or null
+export const heroPhoto = photos.hero // image or null
 export const ogImage = photos.og // '/optimized/og.<hash>.jpg' or null
-export const workPhotos = photos.work // [{ name, src, tile, width, height }], sorted by number
+export const logo = photos.logo // { src: data URI, width, height } or null
+export const workPhotos = photos.work // [{ name, thumb: image, full: image }], sorted by number
 
 // Service card photo by file number (1 -> service-1.jpg), or null.
 export const servicePhoto = (number) => photos.services[number] ?? null
+
+// `sizes` for the hero banner: it always fills the screen width.
+export const HERO_SIZES = '100vw'
+
+// <link rel="preload"> for the hero, so the browser fetches it with the HTML instead of
+// waiting for CSS. AVIF only: browsers without AVIF ignore it and use the <picture> fallback.
+export const heroPreloadLink = () =>
+  photos.hero
+    ? [{ rel: 'preload', as: 'image', type: 'image/avif', imagesrcset: photos.hero.avif, imagesizes: HERO_SIZES, fetchpriority: 'high' }]
+    : []
 
 // Alt text per photo file name. A new work-N.jpg without an entry gets the default,
 // so add a line here when you want a better description.

@@ -7,3 +7,5 @@ dist
 # built from public/images/ by scripts/optimize-images.mjs
 public/optimized
 src/generated
+.analyze
+stats.html

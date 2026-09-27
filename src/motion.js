@@ -50,6 +50,17 @@ export const vReveal = {
   },
 }
 
+// Also watch every pre-rendered reveal target on the page, including ones inside parts that
+// hydrate later (lazy components), so they are not left hidden until their JS arrives.
+export function scanReveals() {
+  if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
+    document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-revealed'))
+    return
+  }
+  const observer = getRevealObserver()
+  document.querySelectorAll('[data-reveal]:not(.is-revealed)').forEach((el) => observer.observe(el))
+}
+
 // ---------- v-fade-img: lazy images fade in once loaded ----------
 export const vFadeImg = {
   getSSRProps() {
@@ -163,4 +174,5 @@ export function pageEntered() {
   const list = pendingEnter
   pendingEnter = []
   list.forEach((resolve) => resolve())
+  requestAnimationFrame(scanReveals)
 }
