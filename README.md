@@ -158,10 +158,11 @@ To add photos, put them in `/public/images/` using these names:
 | File name | Where it shows |
 |---|---|
 | `hero.jpg` | Big banner at the top of the home page and district pages (dark overlay keeps the text readable). Also used for the social-sharing preview. |
-| `service-1.jpg` | 1st service card: New borewell |
-| `service-2.jpg` | 2nd service card: Open well |
-| `service-3.jpg` | 3rd service card: Repair & flushing |
-| `service-4.jpg` | 4th service card: Water point survey |
+| `service-1.jpg` | Service card: New open well digging |
+| `service-4.jpg` | Service card: Well deepening |
+| `service-2.jpg` | Service card: Well wall construction |
+| `service-3.jpg` | Service card: Old well cleaning & desilting |
+| `service-5.jpg` | Service card: Water point survey (until added, the card shows `work-2.jpg`) |
 | `work-1.jpg`, `work-2.jpg`, `work-3.jpg`, ... | "பணி இடங்கள் / Work sites" gallery, in number order. Add as many as you like. |
 
 - JPG, PNG or WebP all work (`.jpg`, `.jpeg`, `.png`, `.webp`). Any size; landscape photos look best.

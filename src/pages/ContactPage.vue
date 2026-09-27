@@ -20,7 +20,7 @@ usePageMeta({
 
       <div class="contact-grid">
         <ul class="contact-list">
-          <li v-for="num in business.phones" :key="`tel-${num}`">
+          <li v-for="(num, i) in business.phones" :key="`tel-${num}`" v-reveal="i">
             <a :href="telLink(num)" class="contact-card">
               <span class="icon icon-blue"><AppIcon name="phone" /></span>
               <span>
@@ -29,7 +29,7 @@ usePageMeta({
               </span>
             </a>
           </li>
-          <li v-for="num in business.whatsapp" :key="`wa-${num}`">
+          <li v-for="(num, i) in business.whatsapp" :key="`wa-${num}`" v-reveal="business.phones.length + i">
             <a :href="waLink(num)" class="contact-card" target="_blank" rel="noopener">
               <span class="icon icon-wa"><AppIcon name="whatsapp" /></span>
               <span>
@@ -38,7 +38,7 @@ usePageMeta({
               </span>
             </a>
           </li>
-          <li>
+          <li v-reveal="business.phones.length + business.whatsapp.length">
             <a :href="`mailto:${business.email}`" class="contact-card">
               <span class="icon icon-red"><AppIcon name="mail" /></span>
               <span>
@@ -47,7 +47,7 @@ usePageMeta({
               </span>
             </a>
           </li>
-          <li>
+          <li v-reveal="business.phones.length + business.whatsapp.length + 1">
             <a :href="business.mapUrl" class="contact-card" target="_blank" rel="noopener">
               <span class="icon icon-red"><AppIcon name="map" /></span>
               <span>
@@ -59,7 +59,7 @@ usePageMeta({
           </li>
         </ul>
 
-        <div>
+        <div v-reveal="2">
           <h2 class="form-title">{{ t('enquiryTitle') }}</h2>
           <EnquiryForm />
         </div>
@@ -99,12 +99,34 @@ h1 {
   border-radius: var(--radius);
   color: var(--ink);
   text-decoration: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+/* hover shadow on its own layer, faded in */
+.contact-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 .contact-card:hover {
   border-color: var(--blue);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+}
+.contact-card:hover::after {
+  opacity: 1;
+}
+.contact-card:active {
+  transform: scale(0.98);
 }
 .icon {
   flex: none;
@@ -112,7 +134,7 @@ h1 {
   place-items: center;
   width: 48px;
   height: 48px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   color: #fff;
 }
 .icon-blue {

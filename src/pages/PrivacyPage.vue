@@ -16,13 +16,13 @@ usePageMeta({
       <h1>{{ t('privacy.title') }}</h1>
       <p class="updated">{{ t('privacy.updated') }}</p>
       <p v-for="(para, i) in t('privacy.body')" :key="i">{{ para }}</p>
-      <address>
+      <address v-reveal>
         <strong>{{ business.name }}</strong><br />
         {{ pick(business.address) }}<br />
         <template v-for="num in business.phones" :key="num">
-          <a :href="telLink(num)">{{ formatPhone(num) }}</a><br />
+          <a :href="telLink(num)" class="link-grow">{{ formatPhone(num) }}</a><br />
         </template>
-        <a :href="`mailto:${business.email}`">{{ business.email }}</a>
+        <a :href="`mailto:${business.email}`" class="link-grow">{{ business.email }}</a>
       </address>
     </div>
   </section>

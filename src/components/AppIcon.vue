@@ -11,6 +11,7 @@ defineProps({
     v-if="name === 'whatsapp'"
     :width="size"
     :height="size"
+    :data-icon="name"
     viewBox="0 0 24 24"
     fill="currentColor"
     aria-hidden="true"
@@ -23,6 +24,7 @@ defineProps({
     v-else
     :width="size"
     :height="size"
+    :data-icon="name"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -44,22 +46,26 @@ defineProps({
       <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z" />
       <circle cx="12" cy="9.5" r="2.5" />
     </template>
-    <template v-else-if="name === 'borewell'">
-      <!-- drilling rig mast over a bore -->
-      <path d="M9 3h6M12 3v13M8 21l4-5 4 5M5 21h14" />
-      <path d="M10 7h4M10 11h4" />
-    </template>
     <template v-else-if="name === 'openwell'">
       <!-- round well with pulley frame -->
       <path d="M5 4h14M7 4v8M17 4v8M12 4v5" />
       <ellipse cx="12" cy="13" rx="8" ry="2.5" />
       <path d="M4 13v6c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-6" />
     </template>
-    <template v-else-if="name === 'repair'">
-      <path
-        d="M14.7 6.3a4 4 0 0 0 5 5L21 12.6l-1.4 1.4-1.3-1.3a4 4 0 0 1-5-5L4.2 16.8a2 2 0 1 0 2.9 2.9L16 10.8"
-      />
-      <path d="M14.7 6.3 17 4l3 3-2.3 2.3" />
+    <template v-else-if="name === 'deepening'">
+      <!-- well walls with a down arrow -->
+      <path d="M5 3v14c0 2 3 4 7 4s7-2 7-4V3" />
+      <path d="M12 5v10M8.5 11.5 12 15l3.5-3.5" />
+    </template>
+    <template v-else-if="name === 'wall'">
+      <!-- stone ring wall -->
+      <path d="M3 5h18v14H3z" />
+      <path d="M3 9.7h18M3 14.3h18M9 5v4.7M15 5v4.7M6 9.7v4.6M12 9.7v4.6M18 9.7v4.6M9 14.3V19M15 14.3V19" />
+    </template>
+    <template v-else-if="name === 'cleaning'">
+      <!-- shovel -->
+      <path d="M17 3l4 4M19 5l-8 8" />
+      <path d="M11 13l-2-2-5 5c-1 1-1 3 0 4s3 1 4 0l5-5-2-2Z" />
     </template>
     <template v-else-if="name === 'survey'">
       <!-- meter with probes -->
@@ -71,6 +77,10 @@ defineProps({
     </template>
     <template v-else-if="name === 'arrow'">
       <path d="M5 12h14M13 6l6 6-6 6" />
+    </template>
+    <template v-else-if="name === 'zoom'">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m20 20-4.4-4.4M11 8.5v5M8.5 11h5" />
     </template>
     <template v-else-if="name === 'close'">
       <path d="M6 6l12 12M18 6 6 18" />

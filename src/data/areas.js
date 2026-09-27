@@ -254,8 +254,8 @@ export const states = [
           town('Kodumudi', 'கொடுமுடி'),
         ],
         note: {
-          en: 'We are close by from Tiruchengode, so we reach farms across Erode district quickly for site visits, drilling and repairs.',
-          ta: 'திருச்செங்கோட்டிலிருந்து அருகில் இருப்பதால், ஈரோடு மாவட்டம் முழுவதும் இட ஆய்வு, துளையிடுதல் மற்றும் பழுது பார்ப்புக்கு விரைவாக வருகிறோம்.',
+          en: 'We are close by from Tiruchengode, so we reach farms across Erode district quickly for site visits, well digging and well cleaning.',
+          ta: 'திருச்செங்கோட்டிலிருந்து அருகில் இருப்பதால், ஈரோடு மாவட்டம் முழுவதும் இட ஆய்வு, கிணறு வெட்டுதல் மற்றும் தூர்வாருதலுக்கு விரைவாக வருகிறோம்.',
         },
       },
       {
@@ -270,8 +270,8 @@ export const states = [
           town('Madukkarai', 'மதுக்கரை'),
         ],
         note: {
-          en: 'From the foothills near Mettupalayam to the dry belts around Sulur, rock depth changes a lot from farm to farm, so we survey every site before we drill.',
-          ta: 'மேட்டுப்பாளையம் அடிவாரம் முதல் சூலூர் சுற்றியுள்ள வறண்ட பகுதிகள் வரை, ஒவ்வொரு தோட்டத்திலும் பாறை ஆழம் மாறுபடும். அதனால் துளையிடும் முன் ஒவ்வொரு இடத்தையும் ஆய்வு செய்கிறோம்.',
+          en: 'From the foothills near Mettupalayam to the dry belts around Sulur, rock depth changes a lot from farm to farm, so we survey every site before we dig.',
+          ta: 'மேட்டுப்பாளையம் அடிவாரம் முதல் சூலூர் சுற்றியுள்ள வறண்ட பகுதிகள் வரை, ஒவ்வொரு தோட்டத்திலும் பாறை ஆழம் மாறுபடும். அதனால் கிணறு வெட்டும் முன் ஒவ்வொரு இடத்தையும் ஆய்வு செய்கிறோம்.',
         },
       },
       {
@@ -285,8 +285,8 @@ export const states = [
           town('Zamin Uthukuli', 'ஜமீன் ஊத்துக்குளி'),
         ],
         note: {
-          en: 'Coconut farms around Pollachi need a steady water source all year. We help you pick the right point and depth for your borewell or open well.',
-          ta: 'பொள்ளாச்சி தென்னந்தோப்புகளுக்கு ஆண்டு முழுவதும் நிலையான தண்ணீர் தேவை. உங்கள் ஆழ்துளை கிணறு அல்லது திறந்த கிணறுக்கு சரியான இடத்தையும் ஆழத்தையும் தேர்வு செய்ய உதவுகிறோம்.',
+          en: 'Coconut farms around Pollachi need a steady water source all year. We help you pick the right point and depth for your open well.',
+          ta: 'பொள்ளாச்சி தென்னந்தோப்புகளுக்கு ஆண்டு முழுவதும் நிலையான தண்ணீர் தேவை. உங்கள் கிணறுக்கு சரியான இடத்தையும் ஆழத்தையும் தேர்வு செய்ய உதவுகிறோம்.',
         },
       },
       {
@@ -301,8 +301,8 @@ export const states = [
           town('Uthukuli', 'ஊத்துக்குளி'),
         ],
         note: {
-          en: 'In the dry blocks of Tiruppur, Kangeyam and Dharapuram, a proper water point survey saves you from costly dry bores.',
-          ta: 'திருப்பூர், காங்கேயம், தாராபுரம் போன்ற வறண்ட பகுதிகளில், சரியான நீர் புள்ளி ஆய்வு செலவு மிகுந்த வறண்ட துளைகளைத் தவிர்க்க உதவும்.',
+          en: 'In the dry blocks of Tiruppur, Kangeyam and Dharapuram, a proper water point survey saves you from digging a costly dry well.',
+          ta: 'திருப்பூர், காங்கேயம், தாராபுரம் போன்ற வறண்ட பகுதிகளில், சரியான நீர் புள்ளி ஆய்வு செலவு மிகுந்த வறண்ட கிணறுகளைத் தவிர்க்க உதவும்.',
         },
       },
     ],
@@ -322,8 +322,8 @@ export const states = [
           town('Nelamangala', 'நெலமங்களா'),
         ],
         note: {
-          en: 'For farms, farmhouses and plots in and around Bengaluru, we dig open wells and drill borewells after a careful ground survey.',
-          ta: 'பெங்களூரு மற்றும் சுற்றுப்புறங்களில் உள்ள தோட்டங்கள், பண்ணை வீடுகள், மனைகளுக்கு, கவனமான நில ஆய்வுக்குப் பிறகு திறந்த கிணறு மற்றும் ஆழ்துளை கிணறு அமைக்கிறோம்.',
+          en: 'For farms, farmhouses and plots in and around Bengaluru, we dig open wells after a careful ground survey.',
+          ta: 'பெங்களூரு மற்றும் சுற்றுப்புறங்களில் உள்ள தோட்டங்கள், பண்ணை வீடுகள், மனைகளுக்கு, கவனமான நில ஆய்வுக்குப் பிறகு கிணறு வெட்டுகிறோம்.',
         },
       },
     ],

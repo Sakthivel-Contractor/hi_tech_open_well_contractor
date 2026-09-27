@@ -1,9 +1,11 @@
 <script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { lang, t, tEn, tMeta, pick } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { states } from '../data/areas.js'
 import { heroPhoto, ogImage, workPhotos, photoAlt } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
+import { registerHero, unregisterHero } from '../motion.js'
 import AppIcon from '../components/AppIcon.vue'
 import ServiceCards from '../components/ServiceCards.vue'
 import WorkGallery from '../components/WorkGallery.vue'
@@ -50,11 +52,15 @@ const stats = [
   { value: business.wells, key: 'wells' },
   { value: business.states, key: 'states' },
 ]
+
+const hero = ref(null)
+onMounted(() => registerHero(hero.value))
+onBeforeUnmount(unregisterHero)
 </script>
 
 <template>
   <!-- Hero -->
-  <section class="hero">
+  <section ref="hero" class="hero">
     <img
       v-if="heroPhoto"
       :src="heroPhoto.src"
@@ -67,14 +73,16 @@ const stats = [
     />
     <div class="container hero-inner">
       <div class="hero-copy">
-        <p class="badge">
+        <p class="badge hero-in" style="--in: 0">
           <AppIcon name="check" :size="18" />
           {{ t('heroBadge') }}
         </p>
-        <h1>{{ t('heroTitle') }}</h1>
-        <p class="hero-tamil" :lang="lang === 'en' ? 'ta' : 'en'">{{ t('heroTamilLine') }}</p>
-        <p class="hero-text">{{ t('heroText') }}</p>
-        <div class="hero-actions">
+        <h1 class="hero-in" style="--in: 1">{{ t('heroTitle') }}</h1>
+        <p class="hero-tamil hero-in" style="--in: 2" :lang="lang === 'en' ? 'ta' : 'en'">
+          {{ t('heroTamilLine') }}
+        </p>
+        <p class="hero-text hero-in" style="--in: 3">{{ t('heroText') }}</p>
+        <div class="hero-actions hero-in" style="--in: 4">
           <a href="#enquiry" class="btn btn-red">
             {{ t('heroCta') }}
             <AppIcon name="arrow" :size="20" />
@@ -86,14 +94,16 @@ const stats = [
         </div>
       </div>
     </div>
+    <!-- decorative scroll hint (desktop only) -->
+    <span class="scroll-hint" aria-hidden="true"><span></span></span>
   </section>
 
   <!-- Stats -->
   <section class="stats" :aria-label="t('a11y.keyFacts')">
     <div class="container">
       <ul class="stats-grid">
-        <li v-for="s in stats" :key="s.key">
-          <span class="stat-value">{{ s.value }}</span>
+        <li v-for="(s, i) in stats" :key="s.key" v-reveal="i">
+          <span v-count-up class="stat-value">{{ s.value }}</span>
           <span class="stat-label">{{ t(`stats.${s.key}`) }}</span>
         </li>
       </ul>
@@ -103,8 +113,8 @@ const stats = [
   <!-- Services -->
   <section class="section" id="services">
     <div class="container">
-      <h2>{{ t('servicesTitle') }}</h2>
-      <p class="section-intro">{{ t('servicesIntro') }}</p>
+      <h2 v-reveal>{{ t('servicesTitle') }}</h2>
+      <p v-reveal class="section-intro">{{ t('servicesIntro') }}</p>
       <ServiceCards />
     </div>
   </section>
@@ -112,8 +122,8 @@ const stats = [
   <!-- Areas -->
   <section class="section section-alt" id="areas">
     <div class="container">
-      <h2>{{ t('areasTitle') }}</h2>
-      <p class="section-intro">{{ t('areasIntro') }}</p>
+      <h2 v-reveal>{{ t('areasTitle') }}</h2>
+      <p v-reveal class="section-intro">{{ t('areasIntro') }}</p>
       <AreaList />
     </div>
   </section>
@@ -121,7 +131,7 @@ const stats = [
   <!-- Gallery -->
   <section v-if="workPhotos.length" class="section" id="gallery">
     <div class="container">
-      <h2>{{ t('galleryTitle') }}</h2>
+      <h2 v-reveal>{{ t('galleryTitle') }}</h2>
       <WorkGallery />
     </div>
   </section>
@@ -132,21 +142,24 @@ const stats = [
   <!-- Enquiry -->
   <section class="section" id="enquiry">
     <div class="container narrow">
-      <h2>{{ t('enquiryTitle') }}</h2>
-      <p class="section-intro">{{ t('enquiryIntro') }}</p>
-      <EnquiryForm />
+      <h2 v-reveal>{{ t('enquiryTitle') }}</h2>
+      <p v-reveal class="section-intro">{{ t('enquiryIntro') }}</p>
+      <EnquiryForm v-reveal />
     </div>
   </section>
 </template>
 
 <style scoped>
+/* The hero slides up under the sticky (transparent) header. */
 .hero {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   min-height: min(82vh, 640px);
-  padding: 56px 0 64px;
+  margin-top: calc(-1 * var(--header-h));
+  padding: calc(56px + var(--header-h)) 0 64px;
   background: var(--ink);
   color: #fff;
 }
@@ -157,6 +170,27 @@ const stats = [
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* slow zoom-out on load */
+  animation: hero-zoom 1.5s var(--ease) both;
+}
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+}
+/* badge, headline, Tamil line, text, buttons: one after another */
+.hero-in {
+  animation: hero-rise var(--dur-slow) var(--ease) both;
+  animation-delay: calc(150ms + var(--in, 0) * 80ms);
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.scroll-hint {
+  display: none;
 }
 /* dark overlay, heavier on the text side, so the copy stays readable on any photo */
 .hero::before {
@@ -256,10 +290,53 @@ h1 {
 
 @media (min-width: 900px) {
   .hero {
-    padding: 88px 0 96px;
+    padding: calc(88px + var(--header-h)) 0 96px;
+  }
+  .scroll-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 22px;
+    display: block;
+    width: 26px;
+    height: 42px;
+    margin-left: -13px;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    border-radius: var(--radius-pill);
+    opacity: 0;
+    animation: hero-fade var(--dur-slow) var(--ease) 900ms forwards;
+  }
+  .scroll-hint span {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: #fff;
+    animation: hint-bounce 2s var(--ease) 1.5s infinite;
   }
   .hero-actions .btn {
     flex: 0 0 auto;
   }
+}
+@keyframes hero-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes hint-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(12px);
+    opacity: 0.3;
+  }
+}
+.stat-value {
+  font-variant-numeric: tabular-nums;
 }
 </style>

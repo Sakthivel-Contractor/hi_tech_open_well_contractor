@@ -14,6 +14,7 @@ defineProps({
     <section
       v-for="s in states"
       :key="s.slug"
+      v-reveal
       :class="['area-state', { 'area-state-wide': s.districts.length > 4 }]"
     >
       <h3>
@@ -21,7 +22,8 @@ defineProps({
         {{ pick(s.name) }}
       </h3>
       <ul>
-        <li v-for="d in s.districts" :key="d.slug">
+        <!-- the card rises in, then its chips follow; the stagger restarts every 4 chips -->
+        <li v-for="(d, i) in s.districts" :key="d.slug" v-reveal="2 + (i % 4)">
           <span v-if="`/${s.slug}/${d.slug}` === current" class="area-link is-current" aria-current="page">
             {{ pick(d.name) }}
           </span>
@@ -70,6 +72,9 @@ ul {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 }
 .area-link {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -77,24 +82,44 @@ ul {
   min-height: 48px;
   height: 100%;
   padding: 6px 14px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--sand);
   color: var(--ink);
   font-weight: 500;
   line-height: 1.3;
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+/* hover colour fills in from the left */
+a.area-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #e9dfcf;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease);
 }
 .area-link svg {
   flex: none;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-fast) var(--ease);
 }
 a.area-link:hover {
-  background: #e9dfcf;
   color: var(--blue);
+  transform: translateY(-2px);
+}
+a.area-link:hover::before {
+  transform: scaleX(1);
 }
 a.area-link:hover svg {
-  transform: translateX(3px);
+  transform: translateX(4px);
+}
+a.area-link:active {
+  transform: scale(0.97);
 }
 .is-current {
   background: var(--blue);

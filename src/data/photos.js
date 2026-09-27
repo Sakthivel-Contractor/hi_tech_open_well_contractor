@@ -6,8 +6,8 @@ export const heroPhoto = photos.hero // { src, width, height } or null
 export const ogImage = photos.og // '/optimized/og.<hash>.jpg' or null
 export const workPhotos = photos.work // [{ name, src, tile, width, height }], sorted by number
 
-// Service card photo by position in the services list (0 -> service-1.jpg), or null.
-export const servicePhoto = (index) => photos.services[index + 1] ?? null
+// Service card photo by file number (1 -> service-1.jpg), or null.
+export const servicePhoto = (number) => photos.services[number] ?? null
 
 // Alt text per photo file name. A new work-N.jpg without an entry gets the default,
 // so add a line here when you want a better description.
