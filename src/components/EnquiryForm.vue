@@ -12,9 +12,17 @@ const props = defineProps({
 })
 
 const WORK_TYPES = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
+const WORK_TO_CRM = {
+  openwell: 'New Well',
+  deepening: 'Well Deepening',
+  wall: 'Wall Construction',
+  cleaning: 'Desilting',
+  survey: 'Water Survey',
+}
 const OTHER = 'Other Tamil Nadu district'
-const FRAPPE_URL = (import.meta.env.VITE_FRAPPE_URL || '').replace(/\/+$/, '')
-const ENDPOINT = FRAPPE_URL ? `${FRAPPE_URL}/api/method/hitech.api.create_website_lead` : 'https://api.web3forms.com/submit'
+const FRAPPE_URL = (import.meta.env.VITE_FRAPPE_URL || 'https://scribble-vitalize-sugar.ngrok-free.dev').replace(/\/+$/, '')
+const ENDPOINT = 'https://api.web3forms.com/submit'
+const CRM_DIRECT_ENDPOINT = `${FRAPPE_URL}/api/resource/CRM Lead`
 const TIMEOUT_MS = 10000
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
 
@@ -65,42 +73,95 @@ async function onSubmit(event) {
     status.value = 'success'
     return
   }
-  if (!FRAPPE_URL && !accessKey) {
-    status.value = 'notConfigured'
-    return
-  }
-
   status.value = 'sending'
-  const payload = FRAPPE_URL ? {
+  const cleanPhone = normalizePhone(form.phone)
+  const crmWorkType = WORK_TO_CRM[form.work] || 'New Well'
+
+  const leadPayload = {
     name: form.name.trim(),
-    phone: `+91 ${normalizePhone(form.phone)}`,
-    district: form.district || '',
-    work_type: WORK_EN[form.work] || '',
-    message: form.message.trim() || '',
-  } : {
-    access_key: accessKey,
-    subject: subject.value,
-    from_name: `${business.name} website`,
-    name: form.name.trim(),
-    phone: `+91 ${normalizePhone(form.phone)}`,
+    phone: cleanPhone,
     district: form.district,
-    work_type: WORK_EN[form.work],
-    message: form.message.trim() || '-',
-    page: typeof window !== 'undefined' ? window.location.href : '',
+    work_type: crmWorkType,
+    message: form.message.trim() || '',
   }
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
+
   try {
-    const res = await fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    })
-    const json = await res.json().catch(() => ({}))
-    const isSuccess = FRAPPE_URL ? (res.ok && json.message && json.message.status === 'ok') : (res.ok && json.success)
-    if (isSuccess) {
+    let leadCreated = false
+
+    // 1. Send to Vercel Serverless Function /api/lead (avoids CORS)
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(leadPayload),
+        signal: controller.signal,
+      })
+      if (res.ok) {
+        const json = await res.json().catch(() => ({}))
+        if (json.success) leadCreated = true
+      }
+    } catch {
+      // Ignore and fallback
+    }
+
+    // 2. Fallback to direct CRM endpoint
+    if (!leadCreated) {
+      try {
+        const directRes = await fetch(CRM_DIRECT_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+          },
+          body: JSON.stringify({
+            first_name: form.name.trim(),
+            mobile_no: cleanPhone,
+            custom_district: form.district,
+            custom_work_type: crmWorkType,
+            source: 'Website',
+            notes: form.message.trim() || undefined,
+          }),
+          signal: controller.signal,
+        })
+        if (directRes.ok) leadCreated = true
+      } catch {
+        // Fallback failed
+      }
+    }
+
+    // 3. Also send email via Web3Forms if accessKey is present
+    let emailSent = false
+    if (accessKey) {
+      try {
+        const web3Payload = {
+          access_key: accessKey,
+          subject: subject.value,
+          from_name: `${business.name} website`,
+          name: form.name.trim(),
+          phone: `+91 ${cleanPhone}`,
+          district: form.district,
+          work_type: WORK_EN[form.work],
+          message: form.message.trim() || '-',
+          page: typeof window !== 'undefined' ? window.location.href : '',
+        }
+        const wRes = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(web3Payload),
+          signal: controller.signal,
+        })
+        const wJson = await wRes.json().catch(() => ({}))
+        if (wRes.ok && wJson.success) emailSent = true
+      } catch {
+        // Web3Forms failed
+      }
+    }
+
+    if (leadCreated || emailSent) {
       sent.value = true
       setTimeout(
         () => {
