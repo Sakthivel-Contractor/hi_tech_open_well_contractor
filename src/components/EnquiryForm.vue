@@ -13,7 +13,8 @@ const props = defineProps({
 
 const WORK_TYPES = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 const OTHER = 'Other Tamil Nadu district'
-const ENDPOINT = 'https://api.web3forms.com/submit'
+const FRAPPE_URL = (import.meta.env.VITE_FRAPPE_URL || '').replace(/\/+$/, '')
+const ENDPOINT = FRAPPE_URL ? `${FRAPPE_URL}/api/method/hitech.api.create_website_lead` : 'https://api.web3forms.com/submit'
 const TIMEOUT_MS = 10000
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
 
@@ -64,13 +65,19 @@ async function onSubmit(event) {
     status.value = 'success'
     return
   }
-  if (!accessKey) {
+  if (!FRAPPE_URL && !accessKey) {
     status.value = 'notConfigured'
     return
   }
 
   status.value = 'sending'
-  const payload = {
+  const payload = FRAPPE_URL ? {
+    name: form.name.trim(),
+    phone: `+91 ${normalizePhone(form.phone)}`,
+    district: form.district || '',
+    work_type: WORK_EN[form.work] || '',
+    message: form.message.trim() || '',
+  } : {
     access_key: accessKey,
     subject: subject.value,
     from_name: `${business.name} website`,
@@ -82,8 +89,6 @@ async function onSubmit(event) {
     page: typeof window !== 'undefined' ? window.location.href : '',
   }
 
-  // Give up after 10 s (slow or overloaded network) and show the phone number instead.
-  // The filled-in fields are kept, so the visitor can simply press send again.
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
   try {
@@ -94,7 +99,8 @@ async function onSubmit(event) {
       signal: controller.signal,
     })
     const json = await res.json().catch(() => ({}))
-    if (res.ok && json.success) {
+    const isSuccess = FRAPPE_URL ? (res.ok && json.message && json.message.status === 'ok') : (res.ok && json.success)
+    if (isSuccess) {
       sent.value = true
       setTimeout(
         () => {
