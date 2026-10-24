@@ -20,8 +20,9 @@ const WORK_TO_CRM = {
   survey: 'Water Survey',
 }
 const OTHER = 'Other Tamil Nadu district'
+const FRAPPE_URL = (import.meta.env.VITE_FRAPPE_URL || 'https://scribble-vitalize-sugar.ngrok-free.dev').replace(/\/+$/, '')
 const ENDPOINT = 'https://api.web3forms.com/submit'
-const CRM_DIRECT_ENDPOINT = 'https://scribble-vitalize-sugar.ngrok-free.dev/api/resource/CRM Lead'
+const CRM_DIRECT_ENDPOINT = `${FRAPPE_URL}/api/resource/CRM Lead`
 const TIMEOUT_MS = 10000
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
 
@@ -72,7 +73,6 @@ async function onSubmit(event) {
     status.value = 'success'
     return
   }
-
   status.value = 'sending'
   const cleanPhone = normalizePhone(form.phone)
   const crmWorkType = WORK_TO_CRM[form.work] || 'New Well'
