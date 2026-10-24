@@ -5,6 +5,7 @@ import { states } from '../data/areas.js'
 import { business, primaryPhone, formatPhone, telLink } from '../data/business.js'
 import { prefersReducedMotion } from '../motion.js'
 import AppIcon from './AppIcon.vue'
+import DistrictSelect from './DistrictSelect.vue'
 
 const props = defineProps({
   // English district name to preselect, e.g. "Coimbatore"
@@ -275,22 +276,12 @@ const WORK_EN = {
       </div>
 
       <div :class="['field', 'float', { 'has-error': errors.district }]">
-        <select
+        <DistrictSelect
           :id="`${id}-district`"
           v-model="form.district"
-          name="district"
-          required
-          :aria-invalid="errors.district ? 'true' : 'false'"
-          :aria-describedby="errors.district ? `${id}-district-err` : undefined"
-        >
-          <option value="" disabled>{{ t('form.districtPlaceholder') }}</option>
-          <optgroup v-for="s in states" :key="s.slug" :label="pick(s.name)">
-            <option v-for="d in s.districts" :key="d.slug" :value="d.name.en">
-              {{ pick(d.name) }}
-            </option>
-          </optgroup>
-          <option :value="OTHER">{{ t('form.otherDistrict') }}</option>
-        </select>
+          :has-error="!!errors.district"
+          @change="errors.district = ''"
+        />
         <label :for="`${id}-district`" class="float-label">
           {{ t('form.district') }} <span aria-hidden="true">*</span>
         </label>
