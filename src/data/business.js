@@ -1,8 +1,8 @@
 // Single source of truth for business details. Edit here, everything else updates.
 export const business = {
   name: 'HI Tech Open Well Contractor',
-  // Change this to your real domain before deploying (used for sitemap, canonical URLs, Open Graph).
-  siteUrl: 'https://sktechwelldigging.in',
+  // Used for sitemap, canonical URLs, and Open Graph metadata.
+  siteUrl: 'https://hitechopenwell.com',
   phones: ['9585085036', '6374114224'],
   whatsapp: ['9585085036', '6374114224'],
   email: 'velanraja002@gmail.com',

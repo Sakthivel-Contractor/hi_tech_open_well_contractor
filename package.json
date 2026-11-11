@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/optimize-images.mjs && vite",
     "build": "node scripts/optimize-images.mjs && vite-ssg build && node scripts/sitemap.mjs && node scripts/optimize-images.mjs --prune-dist",
+    "build:frappe": "VUE_ASSET_BASE=/assets/hitech/vue/ npm run build && node scripts/package-frappe.mjs",
     "preview": "vite preview",
     "images": "node scripts/optimize-images.mjs",
     "analyze": "node scripts/optimize-images.mjs && vite build --mode analyze --outDir .analyze --emptyOutDir"

@@ -21,9 +21,9 @@ const WORK_TO_CRM = {
   survey: 'Water Survey',
 }
 const OTHER = 'Other Tamil Nadu district'
-const FRAPPE_URL = (import.meta.env.VITE_FRAPPE_URL || 'https://scribble-vitalize-sugar.ngrok-free.dev').replace(/\/+$/, '')
 const ENDPOINT = 'https://api.web3forms.com/submit'
-const CRM_DIRECT_ENDPOINT = `${FRAPPE_URL}/api/resource/CRM Lead`
+const CRM_CSRF_ENDPOINT = '/api/method/hitech.api.get_website_csrf_token'
+const CRM_LEAD_ENDPOINT = '/api/method/hitech.api.create_website_lead'
 const TIMEOUT_MS = 10000
 const accessKey = import.meta.env.VITE_WEB3FORMS_KEY
 
@@ -92,49 +92,37 @@ async function onSubmit(event) {
   try {
     let leadCreated = false
 
-    // 1. Send to Vercel Serverless Function /api/lead (avoids CORS)
+    // 1. Create the lead through the same-origin Frappe API.
     try {
-      const res = await fetch('/api/lead', {
+      const csrfRes = await fetch(CRM_CSRF_ENDPOINT, {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+        signal: controller.signal,
+      })
+      const csrfJson = await csrfRes.json().catch(() => ({}))
+      const csrfToken = csrfJson.message
+      if (!csrfRes.ok || !csrfToken) throw new Error('Could not get a Frappe CSRF token')
+
+      const res = await fetch(CRM_LEAD_ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'X-Frappe-CSRF-Token': csrfToken,
+        },
         body: JSON.stringify(leadPayload),
         signal: controller.signal,
       })
       if (res.ok) {
         const json = await res.json().catch(() => ({}))
-        if (json.success) leadCreated = true
+        if (json.message?.status === 'ok') leadCreated = true
       }
     } catch {
-      // Ignore and fallback
+      // Email submission below can still succeed if CRM is unavailable.
     }
 
-    // 2. Fallback to direct CRM endpoint
-    if (!leadCreated) {
-      try {
-        const directRes = await fetch(CRM_DIRECT_ENDPOINT, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            'ngrok-skip-browser-warning': 'true',
-          },
-          body: JSON.stringify({
-            first_name: form.name.trim(),
-            mobile_no: cleanPhone,
-            custom_district: form.district,
-            custom_work_type: crmWorkType,
-            source: 'Website',
-            notes: form.message.trim() || undefined,
-          }),
-          signal: controller.signal,
-        })
-        if (directRes.ok) leadCreated = true
-      } catch {
-        // Fallback failed
-      }
-    }
-
-    // 3. Also send email via Web3Forms if accessKey is present
+    // 2. Also send email via Web3Forms if accessKey is present
     let emailSent = false
     if (accessKey) {
       try {

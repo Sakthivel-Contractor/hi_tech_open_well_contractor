@@ -9,6 +9,7 @@ export const createApp = ViteSSG(
   App,
   {
     routes,
+    base: '/',
     async scrollBehavior(to, from, savedPosition) {
       // Changing page: scroll once the old page has faded out and the new one is in.
       if (from.matched.length && to.path !== from.path) await waitForPageEnter()

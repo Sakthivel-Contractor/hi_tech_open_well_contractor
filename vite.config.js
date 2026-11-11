@@ -25,6 +25,9 @@ function watchPhotos() {
 }
 
 export default defineConfig(async ({ mode }) => ({
+  // The Vue build is served from Frappe's app public directory on the production
+  // domain. Keep the client-side route base at `/` (configured in main.js).
+  base: process.env.VUE_ASSET_BASE || '/',
   plugins: [
     vue(),
     watchPhotos(),
@@ -43,7 +46,11 @@ export default defineConfig(async ({ mode }) => ({
     // Critical CSS is inlined per page, the rest loads at the end of <body>. Font preloads are
     // off here: App.vue preloads only the fonts the first screen uses; the others load on demand.
     // reduceInlineStyles: false keeps index.html's inline fallback @font-face rules intact.
-    beastiesOptions: { preloadFonts: false, reduceInlineStyles: false },
+    beastiesOptions: {
+      ...(process.env.VUE_ASSET_BASE ? { publicPath: process.env.VUE_ASSET_BASE } : {}),
+      preloadFonts: false,
+      reduceInlineStyles: false,
+    },
     // Writes /contact/index.html etc. so clean URLs work on every static host.
     dirStyle: 'nested',
     includedRoutes(paths) {
