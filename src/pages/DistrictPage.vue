@@ -48,6 +48,7 @@ if (district.value) {
     title: tMeta('meta.districtTitle', v),
     description: tMeta('meta.districtDesc', v),
     path: district.value.path,
+    breadcrumbName: `${v.district}, ${v.state}`,
     extra: {
       script: [
         {

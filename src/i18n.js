@@ -174,9 +174,9 @@ export const messages = {
     notFound: { title: 'Page not found', back: 'Go to home page' },
 
     meta: {
-      homeTitle: 'HI Tech Open Well Contractor | Open Well Digging, Tiruchengode',
+      homeTitle: 'HI Tech Open Borewell | Open Well Contractor in Tamil Nadu',
       homeDesc:
-        'Open well digging, well deepening, wall construction, old well cleaning and water point survey in Tamil Nadu and Bengaluru. 40+ years, 400+ wells. Free site visit. Call +91 95850 85036.',
+        'HI Tech Open Well Contractor provides professional open well digging, deepening and cleaning across Salem, Namakkal, Coimbatore and Tamil Nadu. Contact us today.',
       districtTitle: 'Open Well Digging in {district}, {state} | HI Tech Open Well Contractor',
       districtDesc:
         'Open well digging, well deepening and old well cleaning in {district} and nearby {towns}. Free site visit and water point survey. 40+ years experience. Call +91 95850 85036.',

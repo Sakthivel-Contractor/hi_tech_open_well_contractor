@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
-import { lang, t, tEn, tMeta, pick } from '../i18n.js'
+import { lang, t, tEn, pick } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { states } from '../data/areas.js'
 import { useHead } from '@unhead/vue'
@@ -20,7 +20,6 @@ import AreaList from '../components/AreaList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
 
 const localBusiness = {
-  '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   '@id': `${business.siteUrl}/#business`,
   name: business.name,
@@ -44,12 +43,41 @@ const localBusiness = {
   ),
 }
 
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    localBusiness,
+    {
+      '@type': 'WebSite',
+      '@id': `${business.siteUrl}/#website`,
+      name: business.name,
+      url: `${business.siteUrl}/`,
+      publisher: { '@id': `${business.siteUrl}/#business` },
+      inLanguage: ['ta-IN', 'en-IN'],
+    },
+    ...[
+      'Open well digging',
+      'Open well deepening',
+      'Open well wall construction',
+      'Open well cleaning and desilting',
+      'Water point survey',
+    ].map((serviceType, index) => ({
+      '@type': 'Service',
+      '@id': `${business.siteUrl}/#service-${index + 1}`,
+      serviceType,
+      provider: { '@id': `${business.siteUrl}/#business` },
+      areaServed: { '@type': 'State', name: 'Tamil Nadu' },
+      url: `${business.siteUrl}/#services`,
+    })),
+  ],
+}
+
 usePageMeta({
-  title: tMeta('meta.homeTitle'),
-  description: tMeta('meta.homeDesc'),
+  title: tEn('meta.homeTitle'),
+  description: tEn('meta.homeDesc'),
   path: '/',
   extra: {
-    script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(localBusiness) }],
+    script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(structuredData) }],
   },
 })
 
@@ -83,7 +111,10 @@ onBeforeUnmount(unregisterHero)
           <AppIcon name="check" :size="18" />
           {{ t('heroBadge') }}
         </p>
-        <h1 class="hero-in" style="--in: 1">{{ t('heroTitle') }}</h1>
+        <h1 class="hero-in" style="--in: 1">
+          <span class="hero-brand">HI Tech Open Well Contractor | Hitech Open Borewell</span>
+          <span class="hero-heading-localized">{{ t('heroTitle') }}</span>
+        </h1>
         <p class="hero-tamil hero-in" style="--in: 2" :lang="lang === 'en' ? 'ta' : 'en'">
           {{ t('heroTamilLine') }}
         </p>
@@ -240,6 +271,12 @@ h1 {
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
+.hero-brand {
+  display: block;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  line-height: 1.25;
+}
+.hero-heading-localized { display: block; margin-top: 0.3em; }
 .lang-ta h1 {
   font-size: var(--fs-hero-ta);
   line-height: 1.35;
