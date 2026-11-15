@@ -2,7 +2,7 @@
 export const business = {
   name: 'HI Tech Open Well Contractor',
   // Used for sitemap, canonical URLs, and Open Graph metadata.
-  siteUrl: 'https://hitechopenwell.com',
+  siteUrl: 'https://hitechopen-wellcontractor.in',
   phones: ['9585085036', '6374114224'],
   whatsapp: ['9585085036', '6374114224'],
   email: 'velanraja002@gmail.com',

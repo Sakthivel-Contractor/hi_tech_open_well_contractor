@@ -80,13 +80,13 @@ npm run preview    # serve dist/ locally to check the build
 The build pre-renders every page to its own `index.html`, then writes `sitemap.xml`,
 `robots.txt` and `404.html`.
 
-**Before your first real deploy**, set your domain in `src/data/business.js`:
+The production domain is set in `src/data/business.js`:
 
 ```js
-siteUrl: 'https://your-domain.in',
+siteUrl: 'https://hitechopen-wellcontractor.in',
 ```
 
-It is used in the sitemap, canonical links and social sharing previews.
+It is used in the sitemap, canonical links, structured data and social sharing previews. Change it only if the production domain changes.
 
 To see what is in the JavaScript bundle:
 

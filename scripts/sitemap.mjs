@@ -6,24 +6,19 @@ import { business } from '../src/data/business.js'
 import { districtPaths } from '../src/data/areas.js'
 
 const site = business.siteUrl.replace(/\/$/, '')
-const today = new Date().toISOString().slice(0, 10)
 const pages = [
-  { path: '/', priority: '1.0' },
-  { path: '/contact', priority: '0.8' },
-  ...districtPaths.map((path) => ({ path, priority: '0.9' })),
-  { path: '/privacy', priority: '0.3' },
+  '/',
+  '/contact',
+  ...districtPaths,
+  '/privacy',
 ]
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages
-  .map(
-    (p) => `  <url>
-    <loc>${site}${p.path}</loc>
-    <lastmod>${today}</lastmod>
-    <priority>${p.priority}</priority>
-  </url>`,
-  )
+  .map((page) => `  <url>
+    <loc>${site}${page}</loc>
+  </url>`)
   .join('\n')}
 </urlset>
 `
@@ -40,7 +35,7 @@ writeFileSync('dist/robots.txt', robots)
 // HTML must always be re-checked (a new deploy changes the hashed asset names it points to).
 // Listed per page rather than as /* so it never overlaps the long-lived /assets/* and
 // /optimized/* rules in netlify.toml. Netlify merges this file with netlify.toml.
-const htmlPaths = [...pages.map((p) => p.path), '/404.html']
+const htmlPaths = [...pages, '/404.html']
 const headers = htmlPaths
   .flatMap((p) => (p === '/' || p.endsWith('.html') ? [p] : [p, `${p}/`]))
   .map((p) => `${p}\n  Cache-Control: public, max-age=0, must-revalidate\n`)
