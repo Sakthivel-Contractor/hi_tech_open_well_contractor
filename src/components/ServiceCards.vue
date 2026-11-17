@@ -1,8 +1,14 @@
 <script setup>
 import { lang, t, messages, pick } from '../i18n.js'
 import { servicePhoto, workPhotos, photoAlt } from '../data/photos.js'
+import { serviceByKey, servicePath } from '../data/services.js'
 import AppIcon from './AppIcon.vue'
 import ResponsiveImage from './ResponsiveImage.vue'
+
+const props = defineProps({
+  // Service key to leave out, e.g. on that service's own page.
+  exclude: { type: String, default: '' },
+})
 
 // Each card and the photo it shows: photo 1 -> public/images/service-1.jpg, and so on.
 // `fallback`: a gallery photo to show until that service-N.jpg is added.
@@ -12,7 +18,9 @@ const services = [
   { key: 'wall', photo: 2 },
   { key: 'cleaning', photo: 3 },
   { key: 'survey', photo: 5, fallback: 'work-2' },
-].map((s) => ({ ...s, image: cardImage(s) }))
+]
+  .filter((s) => s.key !== props.exclude)
+  .map((s) => ({ ...s, image: cardImage(s), path: servicePath(serviceByKey(s.key)) }))
 
 // { image, altName } for a card, or null (then the icon box is shown).
 function cardImage({ photo, fallback }) {
@@ -30,7 +38,7 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
 
 <template>
   <ul class="service-grid">
-    <li v-for="({ key, image }, i) in services" :key="key" v-reveal="i" class="service-item">
+    <li v-for="({ key, image, path }, i) in services" :key="key" v-reveal="i" class="service-item">
       <div class="service-card">
         <div class="service-media img-placeholder">
           <ResponsiveImage
@@ -50,9 +58,11 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
         </div>
         <div class="service-body">
           <span class="service-icon"><AppIcon :name="key" :size="26" /></span>
-          <h3>{{ t(`services.${key}.name`) }}</h3>
+          <!-- the link covers the whole card (see .service-link::after) -->
+          <h3><RouterLink :to="path" class="service-link">{{ t(`services.${key}.name`) }}</RouterLink></h3>
           <p class="service-alt" :lang="lang === 'en' ? 'ta' : 'en'">{{ altName(key) }}</p>
           <p>{{ t(`services.${key}.desc`) }}</p>
+          <span class="service-more" aria-hidden="true">{{ t('services.more') }} <AppIcon name="arrow" :size="16" /></span>
         </div>
       </div>
     </li>
@@ -60,6 +70,33 @@ const altName = (key) => messages[lang.value === 'en' ? 'ta' : 'en'].services[ke
 </template>
 
 <style scoped>
+.service-link {
+  color: inherit;
+  text-decoration: none;
+}
+.service-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.service-link:focus-visible {
+  outline: none;
+}
+.service-card:has(.service-link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.service-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+  font-weight: 600;
+  color: var(--red);
+}
 .service-grid {
   list-style: none;
   margin: 0;
@@ -166,7 +203,7 @@ h3 {
   margin: 2px 0 10px;
   color: var(--red);
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: 1rem;
 }
 .service-body p:last-child {
   margin: 0;

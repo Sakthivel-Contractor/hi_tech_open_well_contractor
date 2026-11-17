@@ -40,10 +40,18 @@ await mkdir(publicVueDir, { recursive: true })
 await cp(path.join(distDir, 'assets'), path.join(publicVueDir, 'assets'), { recursive: true })
 
 // Vite prefixes files copied from public/ with the configured base URL. Put
-// those files in app public/ as well; /optimized remains served from www/ below.
+// those files in app public/ as well, including the optimised photos, so they are
+// served from /assets/hitech/vue/ with Frappe Cloud's long-lived cache headers.
+const photos = JSON.parse(await readFile(path.join(repoDir, 'src/generated/photos.json'), 'utf8'))
+if (photos.hero && !photos.hero.src.startsWith('/assets/hitech/vue/optimized/')) {
+  throw new Error(
+    'Photo URLs do not point at /assets/hitech/vue/optimized/. ' +
+      'Build with `npm run build:frappe` (it sets VUE_ASSET_BASE) before packaging.',
+  )
+}
 async function copyPublicAssets(sourceDir, relativeDir = '') {
   for (const entry of await readdir(sourceDir, { withFileTypes: true })) {
-    if (!relativeDir && ['images', 'optimized'].includes(entry.name)) continue
+    if (!relativeDir && entry.name === 'images') continue
     const relativePath = path.join(relativeDir, entry.name)
     const source = path.join(sourceDir, entry.name)
     const destination = path.join(publicVueDir, relativePath)
@@ -62,7 +70,8 @@ const copiedFiles = []
 async function copyWebsiteFiles(sourceDir, relativeDir = '') {
   for (const entry of await readdir(sourceDir, { withFileTypes: true })) {
     const relativePath = path.join(relativeDir, entry.name)
-    if (relativePath === 'assets' || relativePath.startsWith(`assets${path.sep}`)) continue
+    // assets/ and optimized/ live in app public/ (see above), not in www/.
+    if (['assets', 'optimized'].some((dir) => relativePath === dir || relativePath.startsWith(`${dir}${path.sep}`))) continue
 
     const source = path.join(sourceDir, entry.name)
     const destination = path.join(wwwDir, relativePath)
@@ -78,5 +87,15 @@ async function copyWebsiteFiles(sourceDir, relativeDir = '') {
 }
 
 await copyWebsiteFiles(distDir)
+
+// Remove folders left empty by pages that no longer exist (e.g. merged districts), so a
+// local check of www/ matches what git deploys (git does not track empty folders).
+async function removeEmptyDirs(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) await removeEmptyDirs(path.join(dir, entry.name))
+  }
+  if (dir !== wwwDir && (await readdir(dir)).length === 0) await rm(dir, { recursive: true })
+}
+await removeEmptyDirs(wwwDir)
 await writeFile(manifestPath, `${JSON.stringify(copiedFiles, null, 2)}\n`)
 console.log(`Packaged ${copiedFiles.length} Vue website files into ${appDir}`)

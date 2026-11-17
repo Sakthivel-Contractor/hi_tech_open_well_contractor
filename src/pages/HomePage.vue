@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
-import { lang, t, tEn, pick } from '../i18n.js'
+import { lang, t, tEn, tMeta, pick, messages } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { states } from '../data/areas.js'
+import { services, servicePath } from '../data/services.js'
 import { useHead } from '@unhead/vue'
 import { heroPhoto, heroPreloadLink, HERO_SIZES, ogImage, workPhotos, photoAlt } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
@@ -17,10 +18,27 @@ const ReviewsSection = defineAsyncComponent({
   hydrate: hydrateOnVisible({ rootMargin: '200px' }),
 })
 import AreaList from '../components/AreaList.vue'
+import FaqList from '../components/FaqList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
 
-const localBusiness = {
-  '@type': 'LocalBusiness',
+// A state we cover widely is listed as a State; a single city (Bengaluru) as a City.
+const areaServed = states.flatMap((s) =>
+  s.districts.length > 1
+    ? [{ '@type': 'State', name: s.name.en }]
+    : s.districts.map((d) => ({ '@type': 'City', name: d.name.en })),
+)
+
+// Drops empty values, so details the owner has not confirmed yet (business.js) are left out
+// of the markup instead of being published as blanks or placeholders.
+const filled = (obj) =>
+  Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== '' && v != null && !(Array.isArray(v) && !v.length)),
+  )
+
+// GeneralContractor is the schema.org type for a building/earthwork contractor
+// (LocalBusiness > HomeAndConstructionBusiness > GeneralContractor).
+const localBusiness = filled({
+  '@type': 'GeneralContractor',
   '@id': `${business.siteUrl}/#business`,
   name: business.name,
   description: tEn('meta.homeDesc'),
@@ -29,19 +47,27 @@ const localBusiness = {
   logo: `${business.siteUrl}/logo.png`,
   telephone: business.phones.map((p) => `+91${p}`),
   email: business.email,
-  address: {
+  address: filled({
     '@type': 'PostalAddress',
+    streetAddress: business.streetAddress,
     addressLocality: business.address.locality,
     addressRegion: business.address.region,
+    postalCode: business.postalCode,
     addressCountry: business.address.country,
-  },
-  // A state we cover widely is listed as a State; a single city (Bengaluru) as a City.
-  areaServed: states.flatMap((s) =>
-    s.districts.length > 1
-      ? [{ '@type': 'State', name: s.name.en }]
-      : s.districts.map((d) => ({ '@type': 'City', name: d.name.en })),
-  ),
-}
+  }),
+  geo: business.geo ? { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng } : null,
+  hasMap: business.gbpUrl,
+  openingHoursSpecification: business.openingHours.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.days,
+    opens: h.opens,
+    closes: h.closes,
+  })),
+  sameAs: [business.gbpUrl, ...business.sameAs].filter(Boolean),
+  founder: business.founder ? { '@type': 'Person', name: business.founder } : null,
+  foundingDate: business.foundingYear,
+  areaServed,
+})
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -53,28 +79,27 @@ const structuredData = {
       name: business.name,
       url: `${business.siteUrl}/`,
       publisher: { '@id': `${business.siteUrl}/#business` },
-      inLanguage: ['ta-IN', 'en-IN'],
+      // Pages are published in Tamil; English is an on-page switch without its own URLs.
+      inLanguage: 'ta-IN',
     },
-    ...[
-      'Open well digging',
-      'Open well deepening',
-      'Open well wall construction',
-      'Open well cleaning and desilting',
-      'Water point survey',
-    ].map((serviceType, index) => ({
+    // Same @id as the Service on each service page, so both describe one entity.
+    ...services.map((s) => ({
       '@type': 'Service',
-      '@id': `${business.siteUrl}/#service-${index + 1}`,
-      serviceType,
+      '@id': `${business.siteUrl}${servicePath(s)}#service`,
+      name: messages.en.services[s.key].name,
+      serviceType: messages.en.services[s.key].name,
+      url: `${business.siteUrl}${servicePath(s)}`,
       provider: { '@id': `${business.siteUrl}/#business` },
-      areaServed: { '@type': 'State', name: 'Tamil Nadu' },
-      url: `${business.siteUrl}/#services`,
+      areaServed,
     })),
   ],
 }
 
+// The page is published in Tamil, so its title and description are Tamil (English keywords
+// are in the Tamil title). The English description is used for the structured data.
 usePageMeta({
-  title: tEn('meta.homeTitle'),
-  description: tEn('meta.homeDesc'),
+  title: tMeta('meta.homeTitle'),
+  description: tMeta('meta.homeDesc'),
   path: '/',
   extra: {
     script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(structuredData) }],
@@ -112,7 +137,7 @@ onBeforeUnmount(unregisterHero)
           {{ t('heroBadge') }}
         </p>
         <h1 class="hero-in" style="--in: 1">
-          <span class="hero-brand">HI Tech Open Well Contractor | Hitech Open Borewell</span>
+          <span class="hero-brand">{{ business.name }}</span>{{ ' ' }}
           <span class="hero-heading-localized">{{ t('heroTitle') }}</span>
         </h1>
         <p class="hero-tamil hero-in" style="--in: 2" :lang="lang === 'en' ? 'ta' : 'en'">
@@ -176,6 +201,18 @@ onBeforeUnmount(unregisterHero)
   <!-- Reviews -->
   <ReviewsSection class="section-alt" />
 
+  <!-- Questions -->
+  <section class="section section-alt" id="faq">
+    <div class="container narrow">
+      <h2 v-reveal>{{ t('faq.title') }}</h2>
+      <FaqList page="home" />
+      <p v-reveal class="faq-more">
+        <RouterLink to="/cost-guide">{{ t('nav.cost') }}</RouterLink> ·
+        <RouterLink to="/about-us">{{ t('nav.about') }}</RouterLink>
+      </p>
+    </div>
+  </section>
+
   <!-- Enquiry -->
   <section class="section" id="enquiry">
     <div class="container narrow">
@@ -187,6 +224,15 @@ onBeforeUnmount(unregisterHero)
 </template>
 
 <style scoped>
+.faq-more {
+  margin: 20px 0 0;
+  font-weight: 600;
+}
+.faq-more a {
+  display: inline-block;
+  padding: 12px 0;
+  color: var(--red);
+}
 /* The hero slides up under the sticky (transparent) header. */
 .hero {
   position: relative;
@@ -327,7 +373,7 @@ h1 {
 .stat-label {
   display: block;
   margin-top: 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #d4e3ee;
   line-height: 1.3;
 }

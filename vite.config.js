@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { execFile } from 'node:child_process'
 import { districtPaths } from './src/data/areas.js'
+import { servicePaths } from './src/data/services.js'
 
 // During `npm run dev`, re-optimise photos when a file in public/images/ is added,
 // changed or removed. The regenerated src/generated/photos.json reloads the page.
@@ -56,7 +57,7 @@ export default defineConfig(async ({ mode }) => ({
     includedRoutes(paths) {
       const staticPaths = paths.filter((p) => !p.includes(':'))
       // '/404' is moved to dist/404.html by scripts/sitemap.mjs
-      return [...staticPaths, ...districtPaths, '/404']
+      return [...staticPaths, ...servicePaths, ...districtPaths, '/404']
     },
   },
 }))

@@ -4,7 +4,7 @@
 import photos from '../generated/photos.json'
 
 export const heroPhoto = photos.hero // image or null
-export const ogImage = photos.og // '/optimized/og.<hash>.jpg' or null
+export const ogImage = photos.og // '<asset base>/optimized/og.<hash>.jpg' or null
 export const logo = photos.logo // { src: data URI, width, height } or null
 export const workPhotos = photos.work // [{ name, thumb: image, full: image }], sorted by number
 

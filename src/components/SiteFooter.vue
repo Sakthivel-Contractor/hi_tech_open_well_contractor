@@ -4,12 +4,12 @@ import { business, telLink, waLink, formatPhone } from '../data/business.js'
 import { logo } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
 import SectionLink from './SectionLink.vue'
+import { services, servicePath } from '../data/services.js'
 
 // ~2.5 KB WebP inlined into the page (no extra request); the PNG only if it was not built.
 const logoSrc = logo?.src ?? '/logo.png'
 
 const year = new Date().getFullYear()
-const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 </script>
 
 <template>
@@ -39,6 +39,8 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
           <li><RouterLink to="/" class="link-grow">{{ t('nav.home') }}</RouterLink></li>
           <li><SectionLink section="services" class="link-grow">{{ t('nav.services') }}</SectionLink></li>
           <li><SectionLink section="areas" class="link-grow">{{ t('nav.areas') }}</SectionLink></li>
+          <li><RouterLink to="/about-us" class="link-grow">{{ t('nav.about') }}</RouterLink></li>
+          <li><RouterLink to="/cost-guide" class="link-grow">{{ t('nav.cost') }}</RouterLink></li>
           <li><RouterLink to="/contact" class="link-grow">{{ t('nav.contact') }}</RouterLink></li>
           <li><RouterLink to="/privacy" class="link-grow">{{ t('footer.privacy') }}</RouterLink></li>
         </ul>
@@ -47,8 +49,8 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
       <div class="footer-col">
         <p class="footer-heading">{{ t('footer.services') }}</p>
         <ul>
-          <li v-for="key in services" :key="key">
-            <SectionLink section="services" class="link-grow">{{ t(`services.${key}.name`) }}</SectionLink>
+          <li v-for="s in services" :key="s.key">
+            <RouterLink :to="servicePath(s)" class="link-grow">{{ t(`services.${s.key}.name`) }}</RouterLink>
           </li>
         </ul>
       </div>
@@ -151,7 +153,7 @@ ul {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 4px;
+  gap: 0;
 }
 .footer-contact {
   gap: 14px;
@@ -168,14 +170,16 @@ ul {
 }
 .label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: #a99e8c;
 }
 .site-footer a {
   color: #fff;
   text-decoration: none;
   display: inline-block;
-  padding: 4px 0;
+  /* 48px tall tap targets */
+  padding: 10px 0;
+  min-height: 48px;
   transition: color var(--dur-fast) var(--ease);
 }
 .site-footer a:hover {
@@ -192,7 +196,7 @@ ul {
   flex-wrap: wrap;
   gap: 8px 20px;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #a99e8c;
 }
 .footer-bottom a {

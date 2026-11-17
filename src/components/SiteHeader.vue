@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { lang, setLang, t } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { useScrollState, prefersReducedMotion } from '../motion.js'
@@ -20,6 +21,14 @@ const scrolled = computed(() => scrollY.value > 24)
 // Transparent only while resting on top of a hero; solid everywhere else.
 const transparent = computed(() => props.overHero && !scrolled.value)
 
+// Phone menu (below 900px, where the inline nav is hidden). Closes on navigation and Escape.
+const menuOpen = ref(false)
+const route = useRoute()
+watch(() => route.fullPath, () => (menuOpen.value = false))
+function onMenuKey(event) {
+  if (event.key === 'Escape') menuOpen.value = false
+}
+
 // Page text dips out, switches language, and fades back in.
 let switching = false
 function switchLang(value) {
@@ -39,7 +48,10 @@ function switchLang(value) {
 </script>
 
 <template>
-  <header :class="['site-header', { 'is-transparent': transparent, 'is-condensed': scrolled }]">
+  <header
+    :class="['site-header', { 'is-transparent': transparent && !menuOpen, 'is-condensed': scrolled }]"
+    @keydown="onMenuKey"
+  >
     <div class="container header-inner">
       <RouterLink to="/" class="logo">
         <img
@@ -53,7 +65,10 @@ function switchLang(value) {
       </RouterLink>
 
       <nav class="header-nav" :aria-label="t('a11y.mainNav')">
+        <SectionLink section="services" class="nav-link">{{ t('nav.services') }}</SectionLink>
         <SectionLink section="areas" class="nav-link">{{ t('nav.areas') }}</SectionLink>
+        <!-- only on wide screens; the footer and home page link to it everywhere -->
+        <RouterLink to="/about-us" class="nav-link nav-wide">{{ t('nav.about') }}</RouterLink>
         <RouterLink to="/contact" class="nav-link">{{ t('nav.contact') }}</RouterLink>
         <a :href="telLink()" class="nav-link header-phone">
           <AppIcon name="phone" :size="18" />
@@ -74,7 +89,28 @@ function switchLang(value) {
           தமிழ்
         </button>
       </div>
+
+      <button
+        type="button"
+        class="menu-btn"
+        :aria-expanded="menuOpen"
+        aria-controls="phone-menu"
+        :aria-label="t('nav.menu')"
+        @click="menuOpen = !menuOpen"
+      >
+        <span class="menu-bars" :class="{ 'is-open': menuOpen }" aria-hidden="true"><span></span></span>
+      </button>
     </div>
+
+    <nav v-show="menuOpen" id="phone-menu" class="phone-menu" :aria-label="t('nav.menu')">
+      <div class="container">
+        <SectionLink section="services" class="menu-link" @click="menuOpen = false">{{ t('nav.services') }}</SectionLink>
+        <SectionLink section="areas" class="menu-link" @click="menuOpen = false">{{ t('nav.areas') }}</SectionLink>
+        <RouterLink to="/cost-guide" class="menu-link">{{ t('nav.cost') }}</RouterLink>
+        <RouterLink to="/about-us" class="menu-link">{{ t('nav.about') }}</RouterLink>
+        <RouterLink to="/contact" class="menu-link">{{ t('nav.contact') }}</RouterLink>
+      </div>
+    </nav>
   </header>
 </template>
 
@@ -173,8 +209,12 @@ function switchLang(value) {
   color: var(--ink);
   text-decoration: none;
   font-weight: 500;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   transition: color var(--dur-fast) var(--ease);
+}
+.nav-wide {
+  display: none;
 }
 /* underline grows left to right */
 .nav-link::after {
@@ -278,12 +318,99 @@ function switchLang(value) {
     font-size: 1.1rem;
   }
 }
+/* Phone menu */
+.menu-btn {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.menu-bars,
+.menu-bars::before,
+.menu-bars::after,
+.menu-bars span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+.menu-bars {
+  position: relative;
+  background: transparent;
+}
+.menu-bars::before,
+.menu-bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+.menu-bars::before {
+  top: -7px;
+}
+.menu-bars::after {
+  top: 7px;
+}
+.menu-bars.is-open span {
+  opacity: 0;
+}
+.menu-bars.is-open::before {
+  transform: translateY(7px) rotate(45deg);
+}
+.menu-bars.is-open::after {
+  transform: translateY(-7px) rotate(-45deg);
+}
+.phone-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+}
+.phone-menu .container {
+  display: grid;
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+.menu-link {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.menu-link:last-child {
+  border-bottom: 0;
+}
+
 @media (min-width: 900px) {
+  .menu-btn,
+  .phone-menu {
+    display: none !important;
+  }
   .logo-img {
     height: 48px;
   }
   .header-nav {
     display: flex;
+  }
+}
+@media (min-width: 1200px) {
+  .nav-wide {
+    display: inline-flex;
   }
 }
 </style>

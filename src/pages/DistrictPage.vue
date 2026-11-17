@@ -1,9 +1,10 @@
 <script setup>
 import { computed, ref, watch, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useRoute } from 'vue-router'
-import { lang, t, tMeta, pick } from '../i18n.js'
+import { lang, t, tMeta, tIn, pick } from '../i18n.js'
 import { findDistrict } from '../data/areas.js'
 import { business, telLink, waLink, primaryPhone, formatPhone } from '../data/business.js'
+import { serviceByKey, servicePath } from '../data/services.js'
 import { useHead } from '@unhead/vue'
 import { heroPhoto, heroPreloadLink, HERO_SIZES } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
@@ -44,11 +45,18 @@ const vars = computed(() => {
 if (district.value) {
   const v = vars.value
   useHead({ link: heroPreloadLink() })
+  // Title and description in the district's search language (Tamil, or English for
+  // Bengaluru, see areas.js). The description starts with the district's own note, so no two
+  // districts share one.
+  const metaLang = district.value.metaLang ?? null
+  const tm = (key) => (metaLang ? tIn(metaLang, key, v) : tMeta(key, v))
+  const note = district.value.note[metaLang ?? 'ta']
   usePageMeta({
-    title: tMeta('meta.districtTitle', v),
-    description: tMeta('meta.districtDesc', v),
+    title: tm('meta.districtTitle'),
+    description: `${note} ${tm('meta.callSuffix')}`,
     path: district.value.path,
     breadcrumbName: `${v.district}, ${v.state}`,
+    noindex: district.value.indexing === 'noindex',
     extra: {
       script: [
         {
@@ -56,9 +64,18 @@ if (district.value) {
           innerHTML: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Service',
+            '@id': `${business.siteUrl}${district.value.path}#service`,
+            name: `Open well digging in ${v.district}`,
             serviceType: 'Open well digging',
+            description: district.value.note.en,
+            url: `${business.siteUrl}${district.value.path}`,
             provider: { '@id': `${business.siteUrl}/#business`, name: business.name },
-            areaServed: { '@type': 'AdministrativeArea', name: `${v.district}, ${v.state}` },
+            // Tamil Nadu pages cover a whole district; Bengaluru is a city.
+            areaServed: {
+              '@type': district.value.state.districts.length > 1 ? 'AdministrativeArea' : 'City',
+              name: v.district,
+              containedInPlace: { '@type': 'State', name: v.state },
+            },
           }),
         },
       ],
@@ -94,13 +111,8 @@ if (district.value) {
         </nav>
         <h1 class="hero-in" style="--in: 0">{{ t('district.title', vars) }}</h1>
         <p class="alt-title hero-in" style="--in: 1" :lang="lang === 'en' ? 'ta' : 'en'">{{ t('district.tamilTitle', vars) }}</p>
-        <p class="intro hero-in" style="--in: 2">{{ t('district.intro', vars) }}</p>
-        <p class="intro hero-in" style="--in: 3">{{ pick(district.note) }}</p>
-        <p class="badge hero-in" style="--in: 4">
-          <AppIcon name="check" :size="18" />
-          {{ t('heroBadge') }}
-        </p>
-        <div class="actions hero-in" style="--in: 5">
+        <!-- Call and WhatsApp first: on a phone they are the main action, so they sit above the text -->
+        <div class="actions hero-in" style="--in: 2">
           <a href="#enquiry" class="btn btn-red">
             {{ t('heroCta') }}
             <AppIcon name="arrow" :size="20" />
@@ -109,16 +121,62 @@ if (district.value) {
             <AppIcon name="phone" :size="20" />
             {{ formatPhone(primaryPhone) }}
           </a>
-          <a :href="waLink()" class="btn btn-ghost" target="_blank" rel="noopener">
+          <a :href="waLink(undefined, pick(district.name))" class="btn btn-ghost" target="_blank" rel="noopener">
             <AppIcon name="whatsapp" :size="20" />
             {{ t('footer.whatsapp') }}
           </a>
         </div>
+        <p class="intro hero-in" style="--in: 3">{{ t('district.intro', vars) }}</p>
+        <p class="intro hero-in" style="--in: 4">{{ pick(district.note) }}</p>
+        <p class="badge hero-in" style="--in: 5">
+          <AppIcon name="check" :size="18" />
+          {{ t('heroBadge') }}
+        </p>
       </div>
     </section>
 
     <!-- only this district's reviews; renders nothing when there are none -->
     <ReviewsSection :district="district" />
+
+    <!-- Local proof from areas.js: shown only once the owner has filled it in. -->
+    <section v-if="district.localFacts?.length" class="section">
+      <div class="container narrow">
+        <h2 v-reveal>{{ t('district.localFacts', vars) }}</h2>
+        <ul class="facts">
+          <li v-for="(fact, i) in district.localFacts" :key="i" v-reveal="i">
+            <AppIcon name="check" :size="20" />
+            <span>{{ pick(fact) }}</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section v-if="district.projects?.length" class="section section-alt">
+      <div class="container">
+        <h2 v-reveal>{{ t('district.projects', vars) }}</h2>
+        <ul class="projects">
+          <li v-for="(p, i) in district.projects" :key="i" v-reveal="i % 3" class="project">
+            <img
+              v-if="p.photo"
+              :src="p.photo"
+              :alt="`${pick(p.place)} – ${serviceByKey(p.work) ? t(`services.${p.work}.name`) : ''}`"
+              loading="lazy"
+              decoding="async"
+              class="project-photo"
+            />
+            <p class="project-title">
+              <strong>{{ pick(p.place) }}</strong><template v-if="p.year">, {{ p.year }}</template>
+            </p>
+            <p v-if="serviceByKey(p.work)" class="project-work">
+              <RouterLink :to="servicePath(serviceByKey(p.work))">{{ t(`services.${p.work}.name`) }}</RouterLink>
+            </p>
+            <p v-if="p.depth">{{ t('district.depth') }}: {{ pick(p.depth) }}</p>
+            <p v-if="p.water">{{ t('district.water') }}: {{ pick(p.water) }}</p>
+            <p v-if="p.note">{{ pick(p.note) }}</p>
+          </li>
+        </ul>
+      </div>
+    </section>
 
     <section class="section section-alt">
       <div class="container">
@@ -157,6 +215,53 @@ if (district.value) {
 </template>
 
 <style scoped>
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.facts li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+.facts li :deep(svg) {
+  flex: none;
+  margin-top: 3px;
+  color: var(--wa);
+}
+.projects {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.project {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.project p {
+  margin: 0 0 6px;
+}
+.project-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+}
+.project-work a {
+  color: var(--red);
+  font-weight: 600;
+}
 /* same photo + dark overlay treatment as the home hero */
 /* slides up under the sticky (transparent) header */
 .district-hero {

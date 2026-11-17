@@ -208,18 +208,22 @@ HTTPS is issued automatically on both. After the domain works:
 - **Add a district:** add an entry in `src/data/areas.js` (slug, English + Tamil name,
   towns in both languages, note). The page, form dropdown, links and sitemap update automatically.
 - **Any text (English or Tamil):** `src/i18n.js`
+- **Service pages** (`/services/<slug>`): text in `src/data/services.js`. Only add prices,
+  depths, durations or promises there once the owner has confirmed them.
+- **About Us** (`/about-us`): owner details in `src/data/business.js` (`founder`, `foundingYear`,
+  `aboutStory`, `team`, `credentials`); each part shows only when filled.
+- **Cost guide** (`/cost-guide`): `src/data/costGuide.js`. Real price ranges go in `priceRanges`.
+- **Questions and answers**: `src/data/faqs.js` (`pages` decides where each shows). Shown as page
+  text only; no FAQPage structured data.
+- **Work process steps**: `src/data/process.js`.
 - **Colours:** CSS variables at the top of `src/styles/main.css`
 - **Customer reviews:** fill in the entries in `src/data/reviews.js` (name, village, district,
   work, rating, text, date, photo). A review appears once its `name` and `text` are filled; the
   average rating and count update automatically, and each review also shows on the page of its
-  `district`. Until one is filled, the home page shows "எங்கள் வாடிக்கையாளர் கருத்துகள் விரைவில்".
+  `district`. Until one is filled, the reviews section is hidden (or, once `googleReviewUrl` is set, shows
+  only the "Rate us on Google" button).
   Customer photos go in `public/images/reviews/` (small square photos). Only use real reviews,
   with the customer's permission.
-- **Sample reviews (client demo):** the 5 entries marked `isSample: true` in `src/data/reviews.js`
-  are demo reviews, not real customers. They show a grey "மாதிரி / Sample" badge and are never
-  counted in the average rating or review count. The `VITE_SHOW_SAMPLE_REVIEWS` flag controls
-  them (default `true`; set it in `.env` or your host's environment variables, then rebuild).
-  **Before going live, set VITE_SHOW_SAMPLE_REVIEWS=false and add real reviews.**
 - **"Rate us on Google" button:** paste your Google review link into `googleReviewUrl` in
   `src/data/business.js`. The button is hidden until a real link is there.
 - **Photos:** see *Adding photos* below.
