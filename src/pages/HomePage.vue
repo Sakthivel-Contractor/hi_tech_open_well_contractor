@@ -187,6 +187,7 @@ onBeforeUnmount(unregisterHero)
       <h2 v-reveal>{{ t('areasTitle') }}</h2>
       <p v-reveal class="section-intro">{{ t('areasIntro') }}</p>
       <AreaList />
+      <p v-reveal class="faq-more"><RouterLink to="/service-areas">{{ t('nav.allAreas') }}</RouterLink></p>
     </div>
   </section>
 
@@ -195,6 +196,7 @@ onBeforeUnmount(unregisterHero)
     <div class="container">
       <h2 v-reveal>{{ t('galleryTitle') }}</h2>
       <WorkGallery />
+      <p v-reveal class="faq-more"><RouterLink to="/gallery">{{ t('nav.gallery') }}</RouterLink></p>
     </div>
   </section>
 

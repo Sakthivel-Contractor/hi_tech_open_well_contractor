@@ -10,7 +10,6 @@ import { heroPhoto, heroPreloadLink, HERO_SIZES } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
 import { registerHero, unregisterHero } from '../motion.js'
 import AppIcon from '../components/AppIcon.vue'
-import SectionLink from '../components/SectionLink.vue'
 import ResponsiveImage from '../components/ResponsiveImage.vue'
 import ServiceCards from '../components/ServiceCards.vue'
 import AreaList from '../components/AreaList.vue'
@@ -105,7 +104,7 @@ if (district.value) {
         <nav class="crumbs" :aria-label="t('a11y.breadcrumb')">
           <RouterLink to="/">{{ t('nav.home') }}</RouterLink>
           <span aria-hidden="true">/</span>
-          <SectionLink section="areas">{{ pick(district.state.name) }}</SectionLink>
+          <RouterLink to="/service-areas">{{ pick(district.state.name) }}</RouterLink>
           <span aria-hidden="true">/</span>
           <span aria-current="page">{{ pick(district.name) }}</span>
         </nav>

@@ -38,6 +38,11 @@ const entries = [
     path: '/cost-guide',
     sources: ['src/pages/CostGuidePage.vue', 'src/data/costGuide.js', 'src/data/process.js', 'src/data/faqs.js'],
   },
+  { path: '/service-areas', sources: ['src/pages/ServiceAreasPage.vue', 'src/data/areas.js'] },
+  {
+    path: '/gallery',
+    sources: ['src/pages/GalleryPage.vue', 'src/data/photos.js', 'src/data/services.js', 'public/images'],
+  },
   { path: '/privacy', sources: ['src/pages/PrivacyPage.vue'] },
 ]
 const pages = entries.map((e) => e.path)
