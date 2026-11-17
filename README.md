@@ -210,6 +210,12 @@ HTTPS is issued automatically on both. After the domain works:
 - **Any text (English or Tamil):** `src/i18n.js`
 - **Service pages** (`/services/<slug>`): text in `src/data/services.js`. Only add prices,
   depths, durations or promises there once the owner has confirmed them.
+- **About Us** (`/about-us`): owner details in `src/data/business.js` (`founder`, `foundingYear`,
+  `aboutStory`, `team`, `credentials`); each part shows only when filled.
+- **Cost guide** (`/cost-guide`): `src/data/costGuide.js`. Real price ranges go in `priceRanges`.
+- **Questions and answers**: `src/data/faqs.js` (`pages` decides where each shows). Shown as page
+  text only; no FAQPage structured data.
+- **Work process steps**: `src/data/process.js`.
 - **Colours:** CSS variables at the top of `src/styles/main.css`
 - **Customer reviews:** fill in the entries in `src/data/reviews.js` (name, village, district,
   work, rating, text, date, photo). A review appears once its `name` and `text` are filled; the

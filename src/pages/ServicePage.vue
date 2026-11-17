@@ -10,6 +10,8 @@ import AppIcon from '../components/AppIcon.vue'
 import ServiceCards from '../components/ServiceCards.vue'
 import AreaList from '../components/AreaList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
+import FaqList from '../components/FaqList.vue'
+import { faqsFor } from '../data/faqs.js'
 import NotFound from './NotFound.vue'
 
 const route = useRoute()
@@ -134,6 +136,16 @@ if (service.value) {
       <div class="container">
         <h2 v-reveal>{{ t('servicePage.otherServices') }}</h2>
         <ServiceCards :exclude="service.key" />
+      </div>
+    </section>
+
+    <section v-if="faqsFor(service.key).length" class="section">
+      <div class="container narrow">
+        <h2 v-reveal>{{ t('faq.title') }}</h2>
+        <FaqList :page="service.key" />
+        <p v-reveal class="note">
+          <RouterLink to="/cost-guide">{{ t('nav.cost') }}</RouterLink>
+        </p>
       </div>
     </section>
 

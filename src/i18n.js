@@ -30,7 +30,7 @@ export const messages = {
   en: {
     tagline: 'Digging deep for water you can count on, for 40 years',
     skipToContent: 'Skip to content',
-    nav: { home: 'Home', services: 'Services', areas: 'Areas', contact: 'Contact' },
+    nav: { home: 'Home', services: 'Services', areas: 'Areas', contact: 'Contact', about: 'About us', cost: 'Cost guide' },
     langToggleLabel: 'Switch language',
     a11y: { keyFacts: 'Key facts', breadcrumb: 'Breadcrumb', mainNav: 'Main' },
 
@@ -169,6 +169,37 @@ export const messages = {
       enquiry: 'Enquiry for {service}',
     },
 
+    about: {
+      title: 'About HI Tech Open Well Contractor',
+      intro:
+        'HI Tech Open Well Contractor is based in Tiruchengode, Namakkal district. We dig new open wells, deepen and desilt old wells, build ring walls and survey land for water, for farms, homes and plots across Tamil Nadu and in Bengaluru.',
+      founder: 'Founder',
+      since: 'Working since',
+      servicesTitle: 'What we do',
+      equipmentTitle: 'Our equipment',
+      equipment:
+        'We dig and deepen wells with excavators (poclain), build ring walls in stone or concrete, and use a resistivity meter for the water point survey before digging.',
+      teamTitle: 'Our team',
+      credentialsTitle: 'Registrations and credentials',
+      contactTitle: 'Talk to us',
+    },
+
+    process: { title: 'How a job runs' },
+
+    cost: {
+      title: 'Open well cost guide',
+      intro:
+        'Every open well is different, so there is no single price. This page explains what changes the cost of digging, deepening, ring walls and desilting, so you know what to ask about when you call.',
+      factorsTitle: 'What changes the cost',
+      pricesTitle: 'Current price ranges',
+      pricesNote: 'These are ranges. The cost for your site is agreed after the site visit.',
+      howTitle: 'How to get the cost for your site',
+      how: 'Call or WhatsApp us with your village and the work you need. The site visit is free; after it we can talk about the cost for your land.',
+      byService: 'Read more about each service',
+    },
+
+    faq: { title: 'Questions people ask' },
+
     contact: {
       title: 'Contact us',
       intro: 'Call or WhatsApp us for a free site visit. You can also send the form below.',
@@ -198,6 +229,12 @@ export const messages = {
       // Follows the district's own note from areas.js, so each description is different.
       callSuffix: 'Free site visit: call +91 95850 85036.',
       serviceTitle: '{name} in Tamil Nadu & Bengaluru | HI Tech Open Well Contractor',
+      aboutTitle: 'About Us | HI Tech Open Well Contractor, Tiruchengode',
+      aboutDesc:
+        'Who we are and how we work: open well digging, deepening, ring walls, desilting and water point surveys from Tiruchengode.',
+      costTitle: 'Open Well Cost Guide: What Changes the Price | HI Tech Open Well Contractor',
+      costDesc:
+        'What changes the cost of an open well: soil or rock, depth, width, ring wall, old well condition and machine access. Free site visit before any price.',
       contactTitle: 'Contact | HI Tech Open Well Contractor',
       contactDesc:
         'Call or WhatsApp HI Tech Open Well Contractor, Tiruchengode, for open well work. Phone +91 95850 85036 or +91 63741 14224.',
@@ -211,7 +248,7 @@ export const messages = {
   ta: {
     tagline: '40 ஆண்டுகளாக நம்பிக்கையான தண்ணீருக்காக ஆழமாக தோண்டுகிறோம்',
     skipToContent: 'உள்ளடக்கத்துக்குச் செல்',
-    nav: { home: 'முகப்பு', services: 'சேவைகள்', areas: 'பகுதிகள்', contact: 'தொடர்பு' },
+    nav: { home: 'முகப்பு', services: 'சேவைகள்', areas: 'பகுதிகள்', contact: 'தொடர்பு', about: 'எங்களைப் பற்றி', cost: 'செலவு வழிகாட்டி' },
     langToggleLabel: 'மொழியை மாற்று',
     a11y: { keyFacts: 'முக்கிய தகவல்கள்', breadcrumb: 'பக்க வழி', mainNav: 'முதன்மை மெனு' },
 
@@ -351,6 +388,37 @@ export const messages = {
       enquiry: '{service} – விசாரணை',
     },
 
+    about: {
+      title: 'HI Tech Open Well Contractor பற்றி',
+      intro:
+        'HI Tech Open Well Contractor நாமக்கல் மாவட்டம், திருச்செங்கோட்டை மையமாகக் கொண்டு செயல்படுகிறது. தமிழ்நாடு முழுவதும் மற்றும் பெங்களூருவில் தோட்டங்கள், வீடுகள், மனைகளுக்கு புதிய கிணறு வெட்டுதல், பழைய கிணறு ஆழப்படுத்துதல், தூர்வாருதல், சுற்றுச்சுவர் கட்டுதல், நிலத்தடி நீர் ஆய்வு ஆகிய பணிகளைச் செய்கிறோம்.',
+      founder: 'நிறுவனர்',
+      since: 'தொடங்கிய ஆண்டு',
+      servicesTitle: 'நாங்கள் செய்யும் பணிகள்',
+      equipmentTitle: 'எங்கள் இயந்திரங்கள்',
+      equipment:
+        'பொக்லைன் இயந்திரங்கள் மூலம் கிணறு வெட்டுகிறோம், ஆழப்படுத்துகிறோம்; கல் அல்லது கான்கிரீட்டில் சுற்றுச்சுவர் கட்டுகிறோம்; வெட்டும் முன் நீர் புள்ளி ஆய்வுக்கு ரெசிஸ்டிவிட்டி மீட்டர் பயன்படுத்துகிறோம்.',
+      teamTitle: 'எங்கள் குழு',
+      credentialsTitle: 'பதிவுகள் மற்றும் சான்றுகள்',
+      contactTitle: 'எங்களுடன் பேசுங்கள்',
+    },
+
+    process: { title: 'வேலை எப்படி நடக்கிறது' },
+
+    cost: {
+      title: 'கிணறு வெட்டும் செலவு வழிகாட்டி',
+      intro:
+        'ஒவ்வொரு கிணறும் வேறுபட்டது; அதனால் ஒரே விலை கிடையாது. கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர், தூர்வாருதல் ஆகியவற்றின் செலவை எவை மாற்றுகின்றன என்று இந்தப் பக்கம் விளக்குகிறது; அழைக்கும்போது என்ன கேட்க வேண்டும் என்று தெரிந்துகொள்ளலாம்.',
+      factorsTitle: 'செலவை மாற்றும் காரணிகள்',
+      pricesTitle: 'தற்போதைய விலை வரம்புகள்',
+      pricesNote: 'இவை வரம்புகள் மட்டுமே. உங்கள் இடத்துக்கான செலவு இட ஆய்வுக்குப் பிறகு முடிவு செய்யப்படும்.',
+      howTitle: 'உங்கள் இடத்துக்கான செலவை அறிய',
+      how: 'உங்கள் ஊர் மற்றும் தேவையான வேலையுடன் அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். இட ஆய்வு இலவசம்; அதன் பிறகு உங்கள் நிலத்துக்கான செலவைப் பேசலாம்.',
+      byService: 'ஒவ்வொரு சேவை பற்றியும் மேலும் அறிய',
+    },
+
+    faq: { title: 'அடிக்கடி கேட்கப்படும் கேள்விகள்' },
+
     contact: {
       title: 'தொடர்பு கொள்ள',
       intro: 'இலவச இட ஆய்வுக்கு அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். கீழே உள்ள படிவத்தையும் அனுப்பலாம்.',
@@ -380,6 +448,12 @@ export const messages = {
       // Follows the district's own note from areas.js, so each description is different.
       callSuffix: 'இலவச இட ஆய்வுக்கு அழைக்க +91 95850 85036.',
       serviceTitle: '{name} | {nameEn} – HI Tech Open Well Contractor',
+      aboutTitle: 'எங்களைப் பற்றி | HI Tech Open Well Contractor, திருச்செங்கோடு',
+      aboutDesc:
+        'திருச்செங்கோடு HI Tech Open Well Contractor: கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர், தூர்வாருதல், நீர் புள்ளி ஆய்வு. நாங்கள் யார், வேலை எப்படி நடக்கிறது.',
+      costTitle: 'கிணறு வெட்டும் செலவு எதைப் பொறுத்தது? | Open Well Cost Guide – HI Tech',
+      costDesc:
+        'மண்ணா பாறையா, ஆழம், அகலம், சுற்றுச்சுவர், பழைய கிணற்றின் நிலை, இயந்திரம் வந்து சேர வழி: கிணறு செலவை மாற்றும் காரணிகள். இலவச இட ஆய்வு. அழைக்க +91 95850 85036.',
       contactTitle: 'தொடர்பு | HI Tech Open Well Contractor',
       contactDesc:
         'கிணறு வெட்டும் வேலைக்கு திருச்செங்கோடு HI Tech Open Well Contractor-ஐ அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். +91 95850 85036, +91 63741 14224.',

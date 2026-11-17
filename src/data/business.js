@@ -41,6 +41,14 @@ export const business = {
   sameAs: [],
   founder: '',
   foundingYear: '',
+
+  // ---- About Us page (/about-us): shown only when filled, with the owner's own words ----
+  //   aboutStory   { ta: '...', en: '...' }: how the business started, in a few sentences
+  //   team         [{ name: 'Velan Raja', role: { ta: 'உரிமையாளர்', en: 'Owner' } }]
+  //   credentials  [{ ta: '...', en: '...' }]: registrations, GST, memberships, machine ownership
+  aboutStory: { ta: '', en: '' },
+  team: [],
+  credentials: [],
 }
 
 export const primaryPhone = business.phones[0]

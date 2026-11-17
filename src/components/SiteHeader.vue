@@ -55,6 +55,8 @@ function switchLang(value) {
       <nav class="header-nav" :aria-label="t('a11y.mainNav')">
         <SectionLink section="services" class="nav-link">{{ t('nav.services') }}</SectionLink>
         <SectionLink section="areas" class="nav-link">{{ t('nav.areas') }}</SectionLink>
+        <!-- only on wide screens; the footer and home page link to it everywhere -->
+        <RouterLink to="/about-us" class="nav-link nav-wide">{{ t('nav.about') }}</RouterLink>
         <RouterLink to="/contact" class="nav-link">{{ t('nav.contact') }}</RouterLink>
         <a :href="telLink()" class="nav-link header-phone">
           <AppIcon name="phone" :size="18" />
@@ -174,8 +176,12 @@ function switchLang(value) {
   color: var(--ink);
   text-decoration: none;
   font-weight: 500;
+  white-space: nowrap;
   border-radius: var(--radius-sm);
   transition: color var(--dur-fast) var(--ease);
+}
+.nav-wide {
+  display: none;
 }
 /* underline grows left to right */
 .nav-link::after {
@@ -285,6 +291,11 @@ function switchLang(value) {
   }
   .header-nav {
     display: flex;
+  }
+}
+@media (min-width: 1200px) {
+  .nav-wide {
+    display: inline-flex;
   }
 }
 </style>

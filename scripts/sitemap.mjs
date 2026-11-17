@@ -17,16 +17,27 @@ const site = business.siteUrl.replace(/\/$/, '')
 // Content sources shared by every page: the text, the business details and the reviews.
 const shared = ['src/i18n.js', 'src/data/business.js', 'src/data/reviews.js']
 const entries = [
-  { path: '/', sources: ['src/pages/HomePage.vue', 'src/data/areas.js', 'src/data/photos.js', 'public/images'] },
+  {
+    path: '/',
+    sources: ['src/pages/HomePage.vue', 'src/data/areas.js', 'src/data/photos.js', 'src/data/faqs.js', 'public/images'],
+  },
   { path: '/contact', sources: ['src/pages/ContactPage.vue'] },
   ...servicePaths.map((path) => ({
     path,
-    sources: ['src/pages/ServicePage.vue', 'src/data/services.js', 'src/data/areas.js'],
+    sources: ['src/pages/ServicePage.vue', 'src/data/services.js', 'src/data/areas.js', 'src/data/faqs.js'],
   })),
   // noindex districts (areas.js `indexing`) stay out of the sitemap.
   ...allDistricts
     .filter((d) => d.indexing !== 'noindex')
     .map((d) => ({ path: d.path, sources: ['src/pages/DistrictPage.vue', 'src/data/areas.js'] })),
+  {
+    path: '/about-us',
+    sources: ['src/pages/AboutPage.vue', 'src/data/process.js', 'src/data/services.js', 'src/data/areas.js'],
+  },
+  {
+    path: '/cost-guide',
+    sources: ['src/pages/CostGuidePage.vue', 'src/data/costGuide.js', 'src/data/process.js', 'src/data/faqs.js'],
+  },
   { path: '/privacy', sources: ['src/pages/PrivacyPage.vue'] },
 ]
 const pages = entries.map((e) => e.path)

@@ -18,6 +18,7 @@ const ReviewsSection = defineAsyncComponent({
   hydrate: hydrateOnVisible({ rootMargin: '200px' }),
 })
 import AreaList from '../components/AreaList.vue'
+import FaqList from '../components/FaqList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
 
 // A state we cover widely is listed as a State; a single city (Bengaluru) as a City.
@@ -200,6 +201,18 @@ onBeforeUnmount(unregisterHero)
   <!-- Reviews -->
   <ReviewsSection class="section-alt" />
 
+  <!-- Questions -->
+  <section class="section section-alt" id="faq">
+    <div class="container narrow">
+      <h2 v-reveal>{{ t('faq.title') }}</h2>
+      <FaqList page="home" />
+      <p v-reveal class="faq-more">
+        <RouterLink to="/cost-guide">{{ t('nav.cost') }}</RouterLink> ·
+        <RouterLink to="/about-us">{{ t('nav.about') }}</RouterLink>
+      </p>
+    </div>
+  </section>
+
   <!-- Enquiry -->
   <section class="section" id="enquiry">
     <div class="container narrow">
@@ -211,6 +224,13 @@ onBeforeUnmount(unregisterHero)
 </template>
 
 <style scoped>
+.faq-more {
+  margin: 20px 0 0;
+  font-weight: 600;
+}
+.faq-more a {
+  color: var(--red);
+}
 /* The hero slides up under the sticky (transparent) header. */
 .hero {
   position: relative;
