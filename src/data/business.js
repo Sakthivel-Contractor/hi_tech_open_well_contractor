@@ -21,6 +21,26 @@ export const business = {
   years: '40+',
   wells: '400+',
   states: '2',
+
+  // ---- Verified details for Google and the structured data ----
+  // Fill these only with details the owner has confirmed. Anything left empty is simply not
+  // published (no placeholders reach the site). See OWNER-CHECKLIST.md in the audit folder.
+  //   streetAddress  e.g. '12, Salem Road'   (leave empty to keep the address at town level)
+  //   postalCode     6-digit PIN, e.g. '637211'
+  //   geo            { lat: 11.38, lng: 77.89 } of the office/yard, or null
+  //   openingHours   e.g. [{ days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], opens: '08:00', closes: '19:00' }]
+  //   gbpUrl         the Google Business Profile / Maps link of the verified listing
+  //   sameAs         other official profiles: Facebook page, YouTube channel, JustDial, IndiaMART ...
+  //   founder        owner's name as it should appear publicly
+  //   foundingYear   year the business started, e.g. '1985'
+  streetAddress: '',
+  postalCode: '',
+  geo: null,
+  openingHours: [],
+  gbpUrl: '',
+  sameAs: [],
+  founder: '',
+  foundingYear: '',
 }
 
 export const primaryPhone = business.phones[0]

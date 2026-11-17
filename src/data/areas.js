@@ -1,5 +1,15 @@
 // Service areas. Each district gets its own pre-rendered page at /:state/:district.
 // Towns are listed as { en, ta } so they show in the page language.
+//
+// Optional per district (shown only when filled, and only with real, owner-confirmed data;
+// see DISTRICT-PLAN.md in the audit folder):
+//   indexing    'index' (default) or 'noindex': a noindex page still works for visitors but
+//               leaves the sitemap and asks search engines not to index it.
+//   localFacts  [{ en, ta }]: what is true about wells here, from your own jobs (rock type,
+//               typical depth range, water level, best season).
+//   projects    [{ place: { en, ta }, year: '2025', work: 'deepening', depth: { en, ta },
+//               water: { en, ta }, note: { en, ta }, photo: '/images/projects/x.jpg' }]:
+//               completed jobs in this district. `work` is a service key from services.js.
 const town = (en, ta) => ({ en, ta })
 
 export const states = [
@@ -110,24 +120,14 @@ export const states = [
           town('Srivilliputhur', 'ஸ்ரீவில்லிபுத்தூர்'),
           town('Sattur', 'சாத்தூர்'),
           town('Tiruchuli', 'திருச்சுழி'),
-        ],
-        note: {
-          en: 'Much of Virudhunagar is dry land. A well-placed open well, dug deep enough into the rock, gives a steady supply even in summer.',
-          ta: 'விருதுநகரின் பெரும்பகுதி வறண்ட நிலம். சரியான இடத்தில், பாறைக்குள் போதுமான ஆழத்தில் வெட்டிய கிணறு கோடையிலும் தொடர்ந்து தண்ணீர் தரும்.',
-        },
-      },
-      {
-        slug: 'rajapalayam',
-        name: { en: 'Rajapalayam', ta: 'ராஜபாளையம்' },
-        towns: [
-          town('Srivilliputhur', 'ஸ்ரீவில்லிபுத்தூர்'),
+          // merged from the former /tamil-nadu/rajapalayam page (301 to this page)
+          town('Rajapalayam', 'ராஜபாளையம்'),
           town('Sethur', 'சேத்தூர்'),
-          town('Sivagiri', 'சிவகிரி'),
           town('Watrap', 'வத்திராயிருப்பு'),
         ],
         note: {
-          en: 'Near the Western Ghats foothills around Rajapalayam, we dig open wells for mango, coconut and vegetable farms.',
-          ta: 'ராஜபாளையம் சுற்றியுள்ள மேற்குத் தொடர்ச்சி மலை அடிவாரத்தில், மா, தென்னை, காய்கறித் தோட்டங்களுக்கு கிணறு வெட்டுகிறோம்.',
+          en: 'Much of Virudhunagar is dry land. A well-placed open well, dug deep enough into the rock, gives a steady supply even in summer. Near the Western Ghats foothills around Rajapalayam, we dig open wells for mango, coconut and vegetable farms.',
+          ta: 'விருதுநகரின் பெரும்பகுதி வறண்ட நிலம். சரியான இடத்தில், பாறைக்குள் போதுமான ஆழத்தில் வெட்டிய கிணறு கோடையிலும் தொடர்ந்து தண்ணீர் தரும். ராஜபாளையம் சுற்றியுள்ள மேற்குத் தொடர்ச்சி மலை அடிவாரத்தில், மா, தென்னை, காய்கறித் தோட்டங்களுக்கு கிணறு வெட்டுகிறோம்.',
         },
       },
       {
@@ -140,6 +140,7 @@ export const states = [
           town('Sengottai', 'செங்கோட்டை'),
           town('Puliyangudi', 'புளியங்குடி'),
           town('Surandai', 'சுரண்டை'),
+          town('Sivagiri', 'சிவகிரி'),
         ],
         note: {
           en: 'From Sengottai to Sankarankovil, we take up new open wells, deepening and old well cleaning for farms across Tenkasi.',
@@ -268,16 +269,8 @@ export const states = [
           town('Karamadai', 'காரமடை'),
           town('Thondamuthur', 'தொண்டாமுத்தூர்'),
           town('Madukkarai', 'மதுக்கரை'),
-        ],
-        note: {
-          en: 'From the foothills near Mettupalayam to the dry belts around Sulur, rock depth changes a lot from farm to farm, so we survey every site before we dig.',
-          ta: 'மேட்டுப்பாளையம் அடிவாரம் முதல் சூலூர் சுற்றியுள்ள வறண்ட பகுதிகள் வரை, ஒவ்வொரு தோட்டத்திலும் பாறை ஆழம் மாறுபடும். அதனால் கிணறு வெட்டும் முன் ஒவ்வொரு இடத்தையும் ஆய்வு செய்கிறோம்.',
-        },
-      },
-      {
-        slug: 'pollachi',
-        name: { en: 'Pollachi', ta: 'பொள்ளாச்சி' },
-        towns: [
+          // merged from the former /tamil-nadu/pollachi page (301 to this page)
+          town('Pollachi', 'பொள்ளாச்சி'),
           town('Kinathukadavu', 'கிணத்துக்கடவு'),
           town('Anaimalai', 'ஆனைமலை'),
           town('Negamam', 'நெகமம்'),
@@ -285,8 +278,8 @@ export const states = [
           town('Zamin Uthukuli', 'ஜமீன் ஊத்துக்குளி'),
         ],
         note: {
-          en: 'Coconut farms around Pollachi need a steady water source all year. We help you pick the right point and depth for your open well.',
-          ta: 'பொள்ளாச்சி தென்னந்தோப்புகளுக்கு ஆண்டு முழுவதும் நிலையான தண்ணீர் தேவை. உங்கள் கிணறுக்கு சரியான இடத்தையும் ஆழத்தையும் தேர்வு செய்ய உதவுகிறோம்.',
+          en: 'From the foothills near Mettupalayam to the dry belts around Sulur, rock depth changes a lot from farm to farm, so we survey every site before we dig. Coconut farms around Pollachi need a steady water source all year.',
+          ta: 'மேட்டுப்பாளையம் அடிவாரம் முதல் சூலூர் சுற்றியுள்ள வறண்ட பகுதிகள் வரை, ஒவ்வொரு தோட்டத்திலும் பாறை ஆழம் மாறுபடும். அதனால் கிணறு வெட்டும் முன் ஒவ்வொரு இடத்தையும் ஆய்வு செய்கிறோம். பொள்ளாச்சி தென்னந்தோப்புகளுக்கு ஆண்டு முழுவதும் நிலையான தண்ணீர் தேவை.',
         },
       },
       {

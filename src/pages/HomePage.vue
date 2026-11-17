@@ -27,8 +27,17 @@ const areaServed = states.flatMap((s) =>
     : s.districts.map((d) => ({ '@type': 'City', name: d.name.en })),
 )
 
-const localBusiness = {
-  '@type': 'LocalBusiness',
+// Drops empty values, so details the owner has not confirmed yet (business.js) are left out
+// of the markup instead of being published as blanks or placeholders.
+const filled = (obj) =>
+  Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== '' && v != null && !(Array.isArray(v) && !v.length)),
+  )
+
+// GeneralContractor is the schema.org type for a building/earthwork contractor
+// (LocalBusiness > HomeAndConstructionBusiness > GeneralContractor).
+const localBusiness = filled({
+  '@type': 'GeneralContractor',
   '@id': `${business.siteUrl}/#business`,
   name: business.name,
   description: tEn('meta.homeDesc'),
@@ -37,14 +46,27 @@ const localBusiness = {
   logo: `${business.siteUrl}/logo.png`,
   telephone: business.phones.map((p) => `+91${p}`),
   email: business.email,
-  address: {
+  address: filled({
     '@type': 'PostalAddress',
+    streetAddress: business.streetAddress,
     addressLocality: business.address.locality,
     addressRegion: business.address.region,
+    postalCode: business.postalCode,
     addressCountry: business.address.country,
-  },
+  }),
+  geo: business.geo ? { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng } : null,
+  hasMap: business.gbpUrl,
+  openingHoursSpecification: business.openingHours.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.days,
+    opens: h.opens,
+    closes: h.closes,
+  })),
+  sameAs: [business.gbpUrl, ...business.sameAs].filter(Boolean),
+  founder: business.founder ? { '@type': 'Person', name: business.founder } : null,
+  foundingDate: business.foundingYear,
   areaServed,
-}
+})
 
 const structuredData = {
   '@context': 'https://schema.org',

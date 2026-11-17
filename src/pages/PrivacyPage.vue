@@ -7,6 +7,7 @@ usePageMeta({
   title: tMeta('meta.privacyTitle'),
   description: tMeta('meta.privacyDesc'),
   path: '/privacy',
+  breadcrumbName: tMeta('footer.privacy'),
 })
 </script>
 

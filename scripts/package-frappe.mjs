@@ -87,5 +87,15 @@ async function copyWebsiteFiles(sourceDir, relativeDir = '') {
 }
 
 await copyWebsiteFiles(distDir)
+
+// Remove folders left empty by pages that no longer exist (e.g. merged districts), so a
+// local check of www/ matches what git deploys (git does not track empty folders).
+async function removeEmptyDirs(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) await removeEmptyDirs(path.join(dir, entry.name))
+  }
+  if (dir !== wwwDir && (await readdir(dir)).length === 0) await rm(dir, { recursive: true })
+}
+await removeEmptyDirs(wwwDir)
 await writeFile(manifestPath, `${JSON.stringify(copiedFiles, null, 2)}\n`)
 console.log(`Packaged ${copiedFiles.length} Vue website files into ${appDir}`)

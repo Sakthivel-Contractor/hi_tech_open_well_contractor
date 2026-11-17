@@ -3,7 +3,8 @@ import { business } from '../data/business.js'
 import { ogImage } from '../data/photos.js'
 
 // Per-page title, description, canonical URL and Open Graph tags.
-export function usePageMeta({ title, description, path = '/', breadcrumbName, extra = {} }) {
+// noindex: keep the page working for visitors but ask search engines not to index it.
+export function usePageMeta({ title, description, path = '/', breadcrumbName, noindex = false, extra = {} }) {
   const url = business.siteUrl + (path === '/' ? '/' : path)
   // og.jpg is cut from your hero photo; without one, the logo is shared instead.
   const image = business.siteUrl + (ogImage ?? '/logo.png')
@@ -24,6 +25,7 @@ export function usePageMeta({ title, description, path = '/', breadcrumbName, ex
     link: [{ rel: 'canonical', href: url }],
     meta: [
       { name: 'description', content: description },
+      ...(noindex ? [{ name: 'robots', content: 'noindex, follow' }] : []),
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: business.name },
       { property: 'og:title', content: title },

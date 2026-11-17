@@ -9,6 +9,23 @@ usePageMeta({
   title: tMeta('meta.contactTitle'),
   description: tMeta('meta.contactDesc'),
   path: '/contact',
+  breadcrumbName: tMeta('nav.contact'),
+  extra: {
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          '@id': `${business.siteUrl}/contact#page`,
+          url: `${business.siteUrl}/contact`,
+          name: tMeta('meta.contactTitle'),
+          inLanguage: 'ta-IN',
+          about: { '@id': `${business.siteUrl}/#business` },
+        }),
+      },
+    ],
+  },
 })
 </script>
 

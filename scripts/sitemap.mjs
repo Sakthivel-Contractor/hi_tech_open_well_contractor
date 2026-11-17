@@ -9,7 +9,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { business } from '../src/data/business.js'
-import { districtPaths } from '../src/data/areas.js'
+import { allDistricts } from '../src/data/areas.js'
 import { servicePaths } from '../src/data/services.js'
 
 const site = business.siteUrl.replace(/\/$/, '')
@@ -23,10 +23,10 @@ const entries = [
     path,
     sources: ['src/pages/ServicePage.vue', 'src/data/services.js', 'src/data/areas.js'],
   })),
-  ...districtPaths.map((path) => ({
-    path,
-    sources: ['src/pages/DistrictPage.vue', 'src/data/areas.js'],
-  })),
+  // noindex districts (areas.js `indexing`) stay out of the sitemap.
+  ...allDistricts
+    .filter((d) => d.indexing !== 'noindex')
+    .map((d) => ({ path: d.path, sources: ['src/pages/DistrictPage.vue', 'src/data/areas.js'] })),
   { path: '/privacy', sources: ['src/pages/PrivacyPage.vue'] },
 ]
 const pages = entries.map((e) => e.path)

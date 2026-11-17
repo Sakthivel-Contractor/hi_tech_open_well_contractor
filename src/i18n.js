@@ -151,6 +151,10 @@ export const messages = {
       nearby: 'Towns we cover near {district}',
       enquiry: 'Enquiry for {district}',
       otherAreas: 'Other areas',
+      localFacts: 'Open wells in {district}: what we see',
+      projects: 'Our work in {district}',
+      depth: 'Depth',
+      water: 'Water',
     },
 
     servicePage: {
@@ -328,6 +332,10 @@ export const messages = {
       nearby: '{districtTa} அருகில் நாங்கள் வரும் ஊர்கள்',
       enquiry: '{districtTa} பகுதிக்கான விசாரணை',
       otherAreas: 'மற்ற பகுதிகள்',
+      localFacts: '{districtTa} பகுதி கிணறுகள் – எங்கள் அனுபவம்',
+      projects: '{districtTa} பகுதியில் எங்கள் பணிகள்',
+      depth: 'ஆழம்',
+      water: 'தண்ணீர்',
     },
 
     servicePage: {
