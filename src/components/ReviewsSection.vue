@@ -1,8 +1,8 @@
 <script setup>
 // Customer reviews from src/data/reviews.js: a swipe carousel on mobile, 3 columns on desktop.
-// Home page: all filled reviews, or a "coming soon" card when there are none.
+// Home page: all filled reviews. With none yet, the section shows only when the Google
+// review link is set (a short note plus the "Rate us on Google" button), otherwise it is hidden.
 // District page (pass `district`): only that district's reviews; hidden when there are none.
-// Sample reviews (isSample) are left out of the average and count.
 import { computed, ref } from 'vue'
 import { lang, t, messages } from '../i18n.js'
 import { business } from '../data/business.js'
@@ -62,7 +62,7 @@ const countText = computed(() =>
 </script>
 
 <template>
-  <section v-if="list.length || !district" class="section reviews-section" id="reviews">
+  <section v-if="list.length || (!district && googleUrl)" class="section reviews-section" id="reviews">
     <div class="container">
       <h2 v-reveal>{{ t('reviews.title') }}</h2>
 

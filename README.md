@@ -212,14 +212,10 @@ HTTPS is issued automatically on both. After the domain works:
 - **Customer reviews:** fill in the entries in `src/data/reviews.js` (name, village, district,
   work, rating, text, date, photo). A review appears once its `name` and `text` are filled; the
   average rating and count update automatically, and each review also shows on the page of its
-  `district`. Until one is filled, the home page shows "எங்கள் வாடிக்கையாளர் கருத்துகள் விரைவில்".
+  `district`. Until one is filled, the reviews section is hidden (or, once `googleReviewUrl` is set, shows
+  only the "Rate us on Google" button).
   Customer photos go in `public/images/reviews/` (small square photos). Only use real reviews,
   with the customer's permission.
-- **Sample reviews (client demo):** the 5 entries marked `isSample: true` in `src/data/reviews.js`
-  are demo reviews, not real customers. They show a grey "மாதிரி / Sample" badge and are never
-  counted in the average rating or review count. The `VITE_SHOW_SAMPLE_REVIEWS` flag controls
-  them (default `true`; set it in `.env` or your host's environment variables, then rebuild).
-  **Before going live, set VITE_SHOW_SAMPLE_REVIEWS=false and add real reviews.**
 - **"Rate us on Google" button:** paste your Google review link into `googleReviewUrl` in
   `src/data/business.js`. The button is hidden until a real link is there.
 - **Photos:** see *Adding photos* below.
