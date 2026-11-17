@@ -4,12 +4,12 @@ import { business, telLink, waLink, formatPhone } from '../data/business.js'
 import { logo } from '../data/photos.js'
 import AppIcon from './AppIcon.vue'
 import SectionLink from './SectionLink.vue'
+import { services, servicePath } from '../data/services.js'
 
 // ~2.5 KB WebP inlined into the page (no extra request); the PNG only if it was not built.
 const logoSrc = logo?.src ?? '/logo.png'
 
 const year = new Date().getFullYear()
-const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
 </script>
 
 <template>
@@ -47,8 +47,8 @@ const services = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
       <div class="footer-col">
         <p class="footer-heading">{{ t('footer.services') }}</p>
         <ul>
-          <li v-for="key in services" :key="key">
-            <SectionLink section="services" class="link-grow">{{ t(`services.${key}.name`) }}</SectionLink>
+          <li v-for="s in services" :key="s.key">
+            <RouterLink :to="servicePath(s)" class="link-grow">{{ t(`services.${s.key}.name`) }}</RouterLink>
           </li>
         </ul>
       </div>

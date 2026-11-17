@@ -53,6 +53,7 @@ function switchLang(value) {
       </RouterLink>
 
       <nav class="header-nav" :aria-label="t('a11y.mainNav')">
+        <SectionLink section="services" class="nav-link">{{ t('nav.services') }}</SectionLink>
         <SectionLink section="areas" class="nav-link">{{ t('nav.areas') }}</SectionLink>
         <RouterLink to="/contact" class="nav-link">{{ t('nav.contact') }}</RouterLink>
         <a :href="telLink()" class="nav-link header-phone">

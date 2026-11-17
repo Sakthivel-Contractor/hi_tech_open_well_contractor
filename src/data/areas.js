@@ -314,6 +314,8 @@ export const states = [
       {
         slug: 'bengaluru',
         name: { en: 'Bengaluru', ta: 'பெங்களூரு' },
+        // Bengaluru searches are mostly in English: its title and description are English.
+        metaLang: 'en',
         towns: [
           town('Hoskote', 'ஹொஸ்கோட்டே'),
           town('Devanahalli', 'தேவனஹள்ளி'),

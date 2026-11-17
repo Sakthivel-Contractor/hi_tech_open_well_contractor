@@ -3,6 +3,11 @@ export const routes = [
   { path: '/contact', name: 'contact', component: () => import('./pages/ContactPage.vue') },
   { path: '/privacy', name: 'privacy', component: () => import('./pages/PrivacyPage.vue') },
   {
+    path: '/services/:service',
+    name: 'service',
+    component: () => import('./pages/ServicePage.vue'),
+  },
+  {
     path: '/:state/:district',
     name: 'district',
     component: () => import('./pages/DistrictPage.vue'),

@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
-import { lang, t, tEn, pick } from '../i18n.js'
+import { lang, t, tEn, tMeta, pick, messages } from '../i18n.js'
 import { business, telLink, primaryPhone, formatPhone } from '../data/business.js'
 import { states } from '../data/areas.js'
+import { services, servicePath } from '../data/services.js'
 import { useHead } from '@unhead/vue'
 import { heroPhoto, heroPreloadLink, HERO_SIZES, ogImage, workPhotos, photoAlt } from '../data/photos.js'
 import { usePageMeta } from '../composables/usePageMeta.js'
@@ -18,6 +19,13 @@ const ReviewsSection = defineAsyncComponent({
 })
 import AreaList from '../components/AreaList.vue'
 import EnquiryForm from '../components/EnquiryForm.vue'
+
+// A state we cover widely is listed as a State; a single city (Bengaluru) as a City.
+const areaServed = states.flatMap((s) =>
+  s.districts.length > 1
+    ? [{ '@type': 'State', name: s.name.en }]
+    : s.districts.map((d) => ({ '@type': 'City', name: d.name.en })),
+)
 
 const localBusiness = {
   '@type': 'LocalBusiness',
@@ -35,12 +43,7 @@ const localBusiness = {
     addressRegion: business.address.region,
     addressCountry: business.address.country,
   },
-  // A state we cover widely is listed as a State; a single city (Bengaluru) as a City.
-  areaServed: states.flatMap((s) =>
-    s.districts.length > 1
-      ? [{ '@type': 'State', name: s.name.en }]
-      : s.districts.map((d) => ({ '@type': 'City', name: d.name.en })),
-  ),
+  areaServed,
 }
 
 const structuredData = {
@@ -53,28 +56,27 @@ const structuredData = {
       name: business.name,
       url: `${business.siteUrl}/`,
       publisher: { '@id': `${business.siteUrl}/#business` },
-      inLanguage: ['ta-IN', 'en-IN'],
+      // Pages are published in Tamil; English is an on-page switch without its own URLs.
+      inLanguage: 'ta-IN',
     },
-    ...[
-      'Open well digging',
-      'Open well deepening',
-      'Open well wall construction',
-      'Open well cleaning and desilting',
-      'Water point survey',
-    ].map((serviceType, index) => ({
+    // Same @id as the Service on each service page, so both describe one entity.
+    ...services.map((s) => ({
       '@type': 'Service',
-      '@id': `${business.siteUrl}/#service-${index + 1}`,
-      serviceType,
+      '@id': `${business.siteUrl}${servicePath(s)}#service`,
+      name: messages.en.services[s.key].name,
+      serviceType: messages.en.services[s.key].name,
+      url: `${business.siteUrl}${servicePath(s)}`,
       provider: { '@id': `${business.siteUrl}/#business` },
-      areaServed: { '@type': 'State', name: 'Tamil Nadu' },
-      url: `${business.siteUrl}/#services`,
+      areaServed,
     })),
   ],
 }
 
+// The page is published in Tamil, so its title and description are Tamil (English keywords
+// are in the Tamil title). The English description is used for the structured data.
 usePageMeta({
-  title: tEn('meta.homeTitle'),
-  description: tEn('meta.homeDesc'),
+  title: tMeta('meta.homeTitle'),
+  description: tMeta('meta.homeDesc'),
   path: '/',
   extra: {
     script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(structuredData) }],
@@ -112,7 +114,7 @@ onBeforeUnmount(unregisterHero)
           {{ t('heroBadge') }}
         </p>
         <h1 class="hero-in" style="--in: 1">
-          <span class="hero-brand">HI Tech Open Well Contractor | Hitech Open Borewell</span>
+          <span class="hero-brand">{{ business.name }}</span>{{ ' ' }}
           <span class="hero-heading-localized">{{ t('heroTitle') }}</span>
         </h1>
         <p class="hero-tamil hero-in" style="--in: 2" :lang="lang === 'en' ? 'ta' : 'en'">

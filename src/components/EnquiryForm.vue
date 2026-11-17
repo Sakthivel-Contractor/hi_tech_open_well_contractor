@@ -10,6 +10,8 @@ import DistrictSelect from './DistrictSelect.vue'
 const props = defineProps({
   // English district name to preselect, e.g. "Coimbatore"
   district: { type: String, default: '' },
+  // Work type to preselect: 'openwell', 'deepening', 'wall', 'cleaning' or 'survey'
+  work: { type: String, default: 'openwell' },
 })
 
 const WORK_TYPES = ['openwell', 'deepening', 'wall', 'cleaning', 'survey']
@@ -32,7 +34,7 @@ const form = reactive({
   name: '',
   phone: '',
   district: props.district,
-  work: 'openwell',
+  work: props.work,
   message: '',
 })
 const errors = reactive({ name: '', phone: '', district: '' })
@@ -156,7 +158,7 @@ async function onSubmit(event) {
         () => {
           sent.value = false
           status.value = 'success'
-          Object.assign(form, { name: '', phone: '', message: '', work: 'openwell' })
+          Object.assign(form, { name: '', phone: '', message: '', work: props.work })
         },
         prefersReducedMotion() ? 0 : 900,
       )

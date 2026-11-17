@@ -67,6 +67,7 @@ export const messages = {
         name: 'Water point survey',
         desc: 'Ground survey with a resistivity meter to choose the best point before you dig.',
       },
+      more: 'Learn more',
     },
 
     areasTitle: 'Where we work',
@@ -152,6 +153,18 @@ export const messages = {
       otherAreas: 'Other areas',
     },
 
+    servicePage: {
+      whenTitle: 'When you need it',
+      factorsTitle: 'What decides the work',
+      factorsNote: 'These change the time and cost of the work. Call or WhatsApp us to talk about your site.',
+      startTitle: 'How we start',
+      startText:
+        'Every job starts with a free site visit and water point survey. Tell us where your land is and we will call you back to fix a visit time.',
+      areasTitle: 'Where we work',
+      otherServices: 'Other services',
+      enquiry: 'Enquiry for {service}',
+    },
+
     contact: {
       title: 'Contact us',
       intro: 'Call or WhatsApp us for a free site visit. You can also send the form below.',
@@ -174,12 +187,13 @@ export const messages = {
     notFound: { title: 'Page not found', back: 'Go to home page' },
 
     meta: {
-      homeTitle: 'HI Tech Open Borewell | Open Well Contractor in Tamil Nadu',
+      homeTitle: 'Open Well Digging & Deepening | HI Tech Open Well Contractor, Tiruchengode',
       homeDesc:
-        'HI Tech Open Well Contractor provides professional open well digging, deepening and cleaning across Salem, Namakkal, Coimbatore and Tamil Nadu. Contact us today.',
-      districtTitle: 'Open Well Digging in {district}, {state} | HI Tech Open Well Contractor',
-      districtDesc:
-        'Open well digging, well deepening and old well cleaning in {district} and nearby {towns}. Free site visit and water point survey. 40+ years experience. Call +91 95850 85036.',
+        'Open well digging, well deepening, ring wall construction, desilting and water point surveys from Tiruchengode, across Tamil Nadu and in Bengaluru. Free site visit. Call +91 95850 85036.',
+      districtTitle: 'Open Well Digging in {district} | {districtTa} கிணறு வெட்டுதல் – HI Tech',
+      // Follows the district's own note from areas.js, so each description is different.
+      callSuffix: 'Free site visit: call +91 95850 85036.',
+      serviceTitle: '{name} in Tamil Nadu & Bengaluru | HI Tech Open Well Contractor',
       contactTitle: 'Contact | HI Tech Open Well Contractor',
       contactDesc:
         'Call or WhatsApp HI Tech Open Well Contractor, Tiruchengode, for open well work. Phone +91 95850 85036 or +91 63741 14224.',
@@ -230,6 +244,7 @@ export const messages = {
         name: 'நிலத்தடி நீர் ஆய்வு',
         desc: 'கிணறு வெட்டும் முன் சிறந்த இடத்தைத் தேர்வு செய்ய ரெசிஸ்டிவிட்டி மீட்டர் மூலம் நில ஆய்வு.',
       },
+      more: 'மேலும் அறிய',
     },
 
     areasTitle: 'நாங்கள் பணியாற்றும் பகுதிகள்',
@@ -315,6 +330,19 @@ export const messages = {
       otherAreas: 'மற்ற பகுதிகள்',
     },
 
+    servicePage: {
+      whenTitle: 'எப்போது தேவை',
+      factorsTitle: 'வேலையை முடிவு செய்யும் காரணிகள்',
+      factorsNote:
+        'இவற்றைப் பொறுத்து வேலையின் நேரமும் செலவும் மாறும். உங்கள் இடத்தைப் பற்றிப் பேச அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும்.',
+      startTitle: 'எப்படித் தொடங்குகிறோம்',
+      startText:
+        'ஒவ்வொரு வேலையும் இலவச இட ஆய்வு மற்றும் நீர் புள்ளி கணிப்புடன் தொடங்குகிறது. உங்கள் நிலம் எங்கே என்று சொல்லுங்கள்; நாங்கள் திரும்ப அழைத்து வருகை நேரத்தை முடிவு செய்வோம்.',
+      areasTitle: 'நாங்கள் பணியாற்றும் பகுதிகள்',
+      otherServices: 'மற்ற சேவைகள்',
+      enquiry: '{service} – விசாரணை',
+    },
+
     contact: {
       title: 'தொடர்பு கொள்ள',
       intro: 'இலவச இட ஆய்வுக்கு அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். கீழே உள்ள படிவத்தையும் அனுப்பலாம்.',
@@ -337,12 +365,13 @@ export const messages = {
     notFound: { title: 'பக்கம் கிடைக்கவில்லை', back: 'முகப்புப் பக்கத்துக்குச் செல்' },
 
     meta: {
-      homeTitle: 'HI Tech Open Well Contractor | கிணறு வெட்டுதல், திருச்செங்கோடு',
+      homeTitle: 'கிணறு வெட்டுதல், ஆழப்படுத்துதல் | HI Tech Open Well Contractor, திருச்செங்கோடு',
       homeDesc:
-        'தமிழ்நாடு மற்றும் பெங்களூருவில் புதிய கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர் கட்டுதல், பழைய கிணறு தூர்வாருதல், நிலத்தடி நீர் ஆய்வு. 40+ ஆண்டு அனுபவம், 400+ கிணறுகள். இலவச இட ஆய்வு. அழைக்க +91 95850 85036.',
-      districtTitle: '{districtTa} பகுதியில் கிணறு வெட்டுதல் | HI Tech Open Well Contractor',
-      districtDesc:
-        '{districtTa} மற்றும் அருகிலுள்ள {townsTa} பகுதிகளில் கிணறு வெட்டுதல், ஆழப்படுத்துதல், பழைய கிணறு தூர்வாருதல். இலவச இட ஆய்வு, நீர் புள்ளி ஆய்வு. 40+ ஆண்டு அனுபவம். அழைக்க +91 95850 85036.',
+        'திருச்செங்கோட்டிலிருந்து தமிழ்நாடு, பெங்களூருவில் புதிய கிணறு வெட்டுதல், ஆழப்படுத்துதல், சுற்றுச்சுவர், தூர்வாருதல், நீர் புள்ளி ஆய்வு. அழைக்க +91 95850 85036.',
+      districtTitle: '{districtTa} கிணறு வெட்டுதல் | Open Well Digging in {district} – HI Tech',
+      // Follows the district's own note from areas.js, so each description is different.
+      callSuffix: 'இலவச இட ஆய்வுக்கு அழைக்க +91 95850 85036.',
+      serviceTitle: '{name} | {nameEn} – HI Tech Open Well Contractor',
       contactTitle: 'தொடர்பு | HI Tech Open Well Contractor',
       contactDesc:
         'கிணறு வெட்டும் வேலைக்கு திருச்செங்கோடு HI Tech Open Well Contractor-ஐ அழைக்கவும் அல்லது வாட்ஸ்அப் செய்யவும். +91 95850 85036, +91 63741 14224.',

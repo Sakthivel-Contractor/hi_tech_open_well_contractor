@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch, onBeforeUnmount, defineAsyncComponent, hydrateOnVisible } from 'vue'
 import { useRoute } from 'vue-router'
-import { lang, t, tMeta, pick } from '../i18n.js'
+import { lang, t, tMeta, tIn, pick } from '../i18n.js'
 import { findDistrict } from '../data/areas.js'
 import { business, telLink, waLink, primaryPhone, formatPhone } from '../data/business.js'
 import { useHead } from '@unhead/vue'
@@ -44,9 +44,15 @@ const vars = computed(() => {
 if (district.value) {
   const v = vars.value
   useHead({ link: heroPreloadLink() })
+  // Title and description in the district's search language (Tamil, or English for
+  // Bengaluru, see areas.js). The description starts with the district's own note, so no two
+  // districts share one.
+  const metaLang = district.value.metaLang ?? null
+  const tm = (key) => (metaLang ? tIn(metaLang, key, v) : tMeta(key, v))
+  const note = district.value.note[metaLang ?? 'ta']
   usePageMeta({
-    title: tMeta('meta.districtTitle', v),
-    description: tMeta('meta.districtDesc', v),
+    title: tm('meta.districtTitle'),
+    description: `${note} ${tm('meta.callSuffix')}`,
     path: district.value.path,
     breadcrumbName: `${v.district}, ${v.state}`,
     extra: {

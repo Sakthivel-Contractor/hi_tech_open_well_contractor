@@ -25,8 +25,13 @@ export const business = {
 
 export const primaryPhone = business.phones[0]
 export const telLink = (num = primaryPhone) => `tel:+91${num}`
-const waMessage = encodeURIComponent(
-  `Hi ${business.name}, I need details about open well work`,
-)
-export const waLink = (num = business.whatsapp[0]) => `https://wa.me/91${num}?text=${waMessage}`
+// Prefilled WhatsApp text. `about` (a district or service name, in any language) is added
+// so the enquiry says what it is for, e.g. waLink(undefined, 'சேலம்').
+const waMessage = (about) =>
+  encodeURIComponent(
+    `வணக்கம் ${business.name}, ${about ? `${about} – ` : ''}கிணறு வேலை பற்றி விவரம் வேண்டும். ` +
+      `(Hi, I need details about open well work${about ? ` – ${about}` : ''}.)`,
+  )
+export const waLink = (num = business.whatsapp[0], about = '') =>
+  `https://wa.me/91${num}?text=${waMessage(about)}`
 export const formatPhone = (num) => `+91 ${num.slice(0, 5)} ${num.slice(5)}`

@@ -208,6 +208,8 @@ HTTPS is issued automatically on both. After the domain works:
 - **Add a district:** add an entry in `src/data/areas.js` (slug, English + Tamil name,
   towns in both languages, note). The page, form dropdown, links and sitemap update automatically.
 - **Any text (English or Tamil):** `src/i18n.js`
+- **Service pages** (`/services/<slug>`): text in `src/data/services.js`. Only add prices,
+  depths, durations or promises there once the owner has confirmed them.
 - **Colours:** CSS variables at the top of `src/styles/main.css`
 - **Customer reviews:** fill in the entries in `src/data/reviews.js` (name, village, district,
   work, rating, text, date, photo). A review appears once its `name` and `text` are filled; the
