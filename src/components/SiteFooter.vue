@@ -38,7 +38,8 @@ const year = new Date().getFullYear()
         <ul>
           <li><RouterLink to="/" class="link-grow">{{ t('nav.home') }}</RouterLink></li>
           <li><SectionLink section="services" class="link-grow">{{ t('nav.services') }}</SectionLink></li>
-          <li><SectionLink section="areas" class="link-grow">{{ t('nav.areas') }}</SectionLink></li>
+          <li><RouterLink to="/service-areas" class="link-grow">{{ t('nav.areas') }}</RouterLink></li>
+          <li><RouterLink to="/gallery" class="link-grow">{{ t('nav.gallery') }}</RouterLink></li>
           <li><RouterLink to="/about-us" class="link-grow">{{ t('nav.about') }}</RouterLink></li>
           <li><RouterLink to="/cost-guide" class="link-grow">{{ t('nav.cost') }}</RouterLink></li>
           <li><RouterLink to="/contact" class="link-grow">{{ t('nav.contact') }}</RouterLink></li>

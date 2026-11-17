@@ -66,7 +66,7 @@ function switchLang(value) {
 
       <nav class="header-nav" :aria-label="t('a11y.mainNav')">
         <SectionLink section="services" class="nav-link">{{ t('nav.services') }}</SectionLink>
-        <SectionLink section="areas" class="nav-link">{{ t('nav.areas') }}</SectionLink>
+        <RouterLink to="/service-areas" class="nav-link">{{ t('nav.areas') }}</RouterLink>
         <!-- only on wide screens; the footer and home page link to it everywhere -->
         <RouterLink to="/about-us" class="nav-link nav-wide">{{ t('nav.about') }}</RouterLink>
         <RouterLink to="/contact" class="nav-link">{{ t('nav.contact') }}</RouterLink>
@@ -105,7 +105,8 @@ function switchLang(value) {
     <nav v-show="menuOpen" id="phone-menu" class="phone-menu" :aria-label="t('nav.menu')">
       <div class="container">
         <SectionLink section="services" class="menu-link" @click="menuOpen = false">{{ t('nav.services') }}</SectionLink>
-        <SectionLink section="areas" class="menu-link" @click="menuOpen = false">{{ t('nav.areas') }}</SectionLink>
+        <RouterLink to="/service-areas" class="menu-link">{{ t('nav.areas') }}</RouterLink>
+        <RouterLink to="/gallery" class="menu-link">{{ t('nav.gallery') }}</RouterLink>
         <RouterLink to="/cost-guide" class="menu-link">{{ t('nav.cost') }}</RouterLink>
         <RouterLink to="/about-us" class="menu-link">{{ t('nav.about') }}</RouterLink>
         <RouterLink to="/contact" class="menu-link">{{ t('nav.contact') }}</RouterLink>
