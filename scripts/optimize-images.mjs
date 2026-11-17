@@ -12,6 +12,10 @@
 // public/optimized/ (file names carry a content hash, so they can be cached forever) and the
 // list of images to src/generated/photos.json, which the pages import.
 //
+// Image URLs follow VUE_ASSET_BASE: the Frappe build (`npm run build:frappe`) serves them from
+// /assets/hitech/vue/optimized/, which Frappe Cloud caches for a year; plain builds and
+// `npm run dev` use /optimized/.
+//
 // `node scripts/optimize-images.mjs --prune-dist` runs after the build and removes the
 // original photos from dist/, so only the optimised copies are deployed.
 import sharp from 'sharp'
@@ -20,7 +24,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 
 const SRC = 'public/images'
 const OUT = 'public/optimized'
-const URL_BASE = '/optimized'
+const URL_BASE = `${(process.env.VUE_ASSET_BASE || '/').replace(/\/+$/, '')}/optimized`
 const MANIFEST = 'src/generated/photos.json'
 const EXT = /\.(jpe?g|png|webp)$/i
 // Part of every output hash: change it when the encoding settings change, so files are rebuilt.
