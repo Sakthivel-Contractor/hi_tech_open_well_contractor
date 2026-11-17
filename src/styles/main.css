@@ -263,9 +263,8 @@ main,
   }
 }
 
-/* Mobile call bar: tucked away while hidden. Pages with a hero start tucked (rendered that
-   way, so no flash before the app starts). Without JS the bar simply stays visible. */
-.js .has-hero .mobile-bar:not(.is-ready),
+/* Mobile call bar: visible from the first paint on every page (Call and WhatsApp are the main
+   actions on a phone); it only tucks away while the visitor scrolls down fast. */
 .js .mobile-bar.is-hidden {
   transform: translateY(calc(100% + 8px));
 }

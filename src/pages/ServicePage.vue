@@ -230,4 +230,10 @@ h1 {
   margin: 16px 0 0;
   color: var(--muted);
 }
+.note a {
+  display: inline-block;
+  padding: 12px 0;
+  color: var(--red);
+  font-weight: 600;
+}
 </style>

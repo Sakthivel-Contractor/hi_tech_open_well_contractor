@@ -1,16 +1,27 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-import { t } from '../i18n.js'
+import { computed, ref, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { t, pick } from '../i18n.js'
 import { telLink, waLink } from '../data/business.js'
-import { useScrollState, heroVisible } from '../motion.js'
+import { findDistrict } from '../data/areas.js'
+import { findService } from '../data/services.js'
+import { useScrollState } from '../motion.js'
 import AppIcon from './AppIcon.vue'
 
-// Slides up once the hero is scrolled past (straight away on pages without one),
-// tucks away while scrolling down fast, and comes back on any scroll up.
+// Shown from the first paint, tucks away while scrolling down fast, and comes back on any
+// scroll up. The WhatsApp message names the district or service of the current page.
 const { scrollDelta } = useScrollState()
 const tucked = ref(false)
 const ready = ref(false)
 onMounted(() => (ready.value = true))
+
+const route = useRoute()
+const about = computed(() => {
+  const district = findDistrict(route.params.state, route.params.district)
+  if (district) return pick(district.name)
+  const service = findService(route.params.service)
+  return service ? t(`services.${service.key}.name`) : ''
+})
 watch(scrollDelta, (d) => {
   if (d > 24) tucked.value = true // ~1400 px/s
   else if (d < -4) tucked.value = false
@@ -19,12 +30,12 @@ watch(scrollDelta, (d) => {
 
 <template>
   <!-- hidden only via html.js, so without scripts the bar simply stays visible -->
-  <div :class="['mobile-bar', { 'is-ready': ready, 'is-hidden': heroVisible || tucked }]">
+  <div :class="['mobile-bar', { 'is-ready': ready, 'is-hidden': tucked }]">
     <a :href="telLink()" class="bar-btn bar-call">
       <AppIcon name="phone" :size="22" />
       {{ t('mobileBar.call') }}
     </a>
-    <a :href="waLink()" class="bar-btn bar-wa" target="_blank" rel="noopener">
+    <a :href="waLink(undefined, about)" class="bar-btn bar-wa" target="_blank" rel="noopener">
       <AppIcon name="whatsapp" :size="22" />
       {{ t('mobileBar.whatsapp') }}
     </a>

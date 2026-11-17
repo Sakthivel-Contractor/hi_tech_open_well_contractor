@@ -30,7 +30,7 @@ export const messages = {
   en: {
     tagline: 'Digging deep for water you can count on, for 40 years',
     skipToContent: 'Skip to content',
-    nav: { home: 'Home', services: 'Services', areas: 'Areas', contact: 'Contact', about: 'About us', cost: 'Cost guide' },
+    nav: { home: 'Home', services: 'Services', areas: 'Areas', contact: 'Contact', about: 'About us', cost: 'Cost guide', menu: 'Menu' },
     langToggleLabel: 'Switch language',
     a11y: { keyFacts: 'Key facts', breadcrumb: 'Breadcrumb', mainNav: 'Main' },
 
@@ -248,7 +248,7 @@ export const messages = {
   ta: {
     tagline: '40 ஆண்டுகளாக நம்பிக்கையான தண்ணீருக்காக ஆழமாக தோண்டுகிறோம்',
     skipToContent: 'உள்ளடக்கத்துக்குச் செல்',
-    nav: { home: 'முகப்பு', services: 'சேவைகள்', areas: 'பகுதிகள்', contact: 'தொடர்பு', about: 'எங்களைப் பற்றி', cost: 'செலவு வழிகாட்டி' },
+    nav: { home: 'முகப்பு', services: 'சேவைகள்', areas: 'பகுதிகள்', contact: 'தொடர்பு', about: 'எங்களைப் பற்றி', cost: 'செலவு வழிகாட்டி', menu: 'மெனு' },
     langToggleLabel: 'மொழியை மாற்று',
     a11y: { keyFacts: 'முக்கிய தகவல்கள்', breadcrumb: 'பக்க வழி', mainNav: 'முதன்மை மெனு' },
 

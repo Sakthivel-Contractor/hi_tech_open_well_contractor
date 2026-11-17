@@ -141,7 +141,9 @@ onUnmounted(() => {
       :id="id"
       class="select-trigger"
       :class="{ 'is-active': isOpen, 'has-val': !!modelValue }"
+      aria-haspopup="listbox"
       :aria-expanded="isOpen"
+      :aria-controls="isOpen ? `${id}-listbox` : undefined"
       :aria-invalid="hasError ? 'true' : 'false'"
       @click="toggleDropdown"
     >
@@ -164,6 +166,12 @@ onUnmounted(() => {
           v-model="search"
           type="text"
           class="search-input"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="true"
+          :aria-controls="`${id}-listbox`"
+          :aria-activedescendant="focusedIndex >= 0 ? `${id}-opt-${focusedIndex}` : undefined"
+          :aria-label="lang === 'ta' ? 'மாவட்டத்தைத் தேடவும்' : 'Search district'"
           :placeholder="lang === 'ta' ? 'மாவட்டத்தை தேடவும் (Search district)...' : 'Type to search district (தமிழ் / English)...'"
           autocomplete="off"
           @keydown.stop="onKeydown"
@@ -172,6 +180,7 @@ onUnmounted(() => {
           v-if="search"
           type="button"
           class="clear-search-btn"
+          :aria-label="lang === 'ta' ? 'தேடலை அழி' : 'Clear search'"
           @click="search = ''; searchInput?.focus()"
         >
           ✕
@@ -179,7 +188,7 @@ onUnmounted(() => {
       </div>
 
       <!-- District list -->
-      <ul class="options-list" role="listbox">
+      <ul :id="`${id}-listbox`" class="options-list" role="listbox" :aria-label="t('form.district')">
         <li
           v-if="filteredOptions.length === 0"
           class="no-results"
@@ -189,6 +198,7 @@ onUnmounted(() => {
 
         <li
           v-for="(d, index) in filteredOptions"
+          :id="`${id}-opt-${index}`"
           :key="d.en"
           class="option"
           :class="{

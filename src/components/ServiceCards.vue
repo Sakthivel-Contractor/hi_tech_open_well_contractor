@@ -203,7 +203,7 @@ h3 {
   margin: 2px 0 10px;
   color: var(--red);
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: 1rem;
 }
 .service-body p:last-child {
   margin: 0;

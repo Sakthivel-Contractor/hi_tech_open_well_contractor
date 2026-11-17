@@ -229,6 +229,8 @@ onBeforeUnmount(unregisterHero)
   font-weight: 600;
 }
 .faq-more a {
+  display: inline-block;
+  padding: 12px 0;
   color: var(--red);
 }
 /* The hero slides up under the sticky (transparent) header. */
@@ -371,7 +373,7 @@ h1 {
 .stat-label {
   display: block;
   margin-top: 4px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #d4e3ee;
   line-height: 1.3;
 }

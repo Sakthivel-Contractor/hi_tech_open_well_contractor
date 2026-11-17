@@ -153,7 +153,7 @@ ul {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 4px;
+  gap: 0;
 }
 .footer-contact {
   gap: 14px;
@@ -170,14 +170,16 @@ ul {
 }
 .label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: #a99e8c;
 }
 .site-footer a {
   color: #fff;
   text-decoration: none;
   display: inline-block;
-  padding: 4px 0;
+  /* 48px tall tap targets */
+  padding: 10px 0;
+  min-height: 48px;
   transition: color var(--dur-fast) var(--ease);
 }
 .site-footer a:hover {
@@ -194,7 +196,7 @@ ul {
   flex-wrap: wrap;
   gap: 8px 20px;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #a99e8c;
 }
 .footer-bottom a {

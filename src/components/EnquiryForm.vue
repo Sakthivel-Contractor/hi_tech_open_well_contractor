@@ -617,7 +617,7 @@ textarea:focus {
 .privacy-line {
   margin: 10px 0 0;
   text-align: center;
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: var(--muted);
 }
 .notice {

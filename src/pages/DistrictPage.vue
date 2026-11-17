@@ -111,13 +111,8 @@ if (district.value) {
         </nav>
         <h1 class="hero-in" style="--in: 0">{{ t('district.title', vars) }}</h1>
         <p class="alt-title hero-in" style="--in: 1" :lang="lang === 'en' ? 'ta' : 'en'">{{ t('district.tamilTitle', vars) }}</p>
-        <p class="intro hero-in" style="--in: 2">{{ t('district.intro', vars) }}</p>
-        <p class="intro hero-in" style="--in: 3">{{ pick(district.note) }}</p>
-        <p class="badge hero-in" style="--in: 4">
-          <AppIcon name="check" :size="18" />
-          {{ t('heroBadge') }}
-        </p>
-        <div class="actions hero-in" style="--in: 5">
+        <!-- Call and WhatsApp first: on a phone they are the main action, so they sit above the text -->
+        <div class="actions hero-in" style="--in: 2">
           <a href="#enquiry" class="btn btn-red">
             {{ t('heroCta') }}
             <AppIcon name="arrow" :size="20" />
@@ -126,11 +121,17 @@ if (district.value) {
             <AppIcon name="phone" :size="20" />
             {{ formatPhone(primaryPhone) }}
           </a>
-          <a :href="waLink()" class="btn btn-ghost" target="_blank" rel="noopener">
+          <a :href="waLink(undefined, pick(district.name))" class="btn btn-ghost" target="_blank" rel="noopener">
             <AppIcon name="whatsapp" :size="20" />
             {{ t('footer.whatsapp') }}
           </a>
         </div>
+        <p class="intro hero-in" style="--in: 3">{{ t('district.intro', vars) }}</p>
+        <p class="intro hero-in" style="--in: 4">{{ pick(district.note) }}</p>
+        <p class="badge hero-in" style="--in: 5">
+          <AppIcon name="check" :size="18" />
+          {{ t('heroBadge') }}
+        </p>
       </div>
     </section>
 
